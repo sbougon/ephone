@@ -185,9 +185,13 @@ function showScreen(id) {
 //  Settings persistence
 // ─────────────────────────────────────────────
 function saveSettings() {
-  localStorage.setItem('ec_photo',   state.photoDataUrl || '');
-  localStorage.setItem('ec_name',    state.contactName);
-  localStorage.setItem('ec_delayMs', String(state.delayMs));
+  try {
+    localStorage.setItem('ec_photo',   state.photoDataUrl || '');
+    localStorage.setItem('ec_name',    state.contactName);
+    localStorage.setItem('ec_delayMs', String(state.delayMs));
+  } catch (e) {
+    console.error('[saveSettings] localStorage failed:', e);
+  }
 }
 
 function loadSettings() {
@@ -387,17 +391,46 @@ function endCall() {
 })();
 
 // ─────────────────────────────────────────────
-//  Photo upload
+//  Photo upload  (compressed to ≤ 300×300 JPEG before storing)
 // ─────────────────────────────────────────────
+function compressPhoto(dataUrl, callback) {
+  const MAX = 300;           // max side length in px — plenty for a 92px circle @3x
+  const QUALITY = 0.75;      // JPEG quality
+
+  const img = new Image();
+  img.onload = () => {
+    const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+    const w = Math.round(img.width  * scale);
+    const h = Math.round(img.height * scale);
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+    const compressed = canvas.toDataURL('image/jpeg', QUALITY);
+    console.log('[photo] original ~', Math.round(dataUrl.length / 1024), 'KB →',
+                'compressed ~', Math.round(compressed.length / 1024), 'KB');
+    callback(compressed);
+  };
+  img.src = dataUrl;
+}
+
 document.getElementById('photo-input').addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
   reader.onload = ev => {
-    state.photoDataUrl = ev.target.result;
-    applyPhoto();
-    saveSettings();
+    compressPhoto(ev.target.result, compressed => {
+      state.photoDataUrl = compressed;
+      applyPhoto();
+      try {
+        saveSettings();
+      } catch (err) {
+        console.error('[photo] localStorage save failed:', err);
+      }
+    });
   };
   reader.readAsDataURL(file);
 });

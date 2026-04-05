@@ -16,136 +16,43 @@ let lockClockTimer = null;   // setInterval to update lock-screen time
 let wakeLock       = null;
 
 // ─────────────────────────────────────────────
-//  Audio engine
+//  Audio engine  (MP3 via <audio> element)
+//
+//  iOS trick: play at volume 0 during the wait to keep the audio
+//  session alive, then switch to vol 1 when the call triggers.
+//  This avoids needing a fresh user gesture for the delayed play.
 // ─────────────────────────────────────────────
 const Audio = (() => {
-  let ctx            = null;
-  let silentOsc      = null;
-  let ringtoneTimer  = null;
-  let ringing        = false;
-
-  function getCtx() {
-    if (!ctx) {
-      const Ctor = window.AudioContext || window.webkitAudioContext;
-      if (!Ctor) { console.error('[Audio] WebAudio not supported'); return null; }
-      ctx = new Ctor();
-      console.log('[Audio] AudioContext created — state:', ctx.state, '| sampleRate:', ctx.sampleRate);
-    }
-    if (ctx.state === 'suspended') {
-      console.log('[Audio] Context suspended, calling resume()...');
-      ctx.resume()
-        .then(() => console.log('[Audio] resume() resolved — state now:', ctx.state))
-        .catch(e  => console.error('[Audio] resume() failed:', e));
-    }
-    return ctx;
-  }
-
-  // One marimba-style note (fundamental + 4th harmonic)
-  function note(freq, t, vol = 0.38) {
-    const c = ctx;
-    if (!c) return;
-    [[freq, vol], [freq * 4, vol * 0.12]].forEach(([f, v]) => {
-      const osc  = c.createOscillator();
-      const gain = c.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = f;
-      osc.connect(gain);
-      gain.connect(c.destination);
-      gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(v, t + 0.006);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
-      osc.start(t);
-      osc.stop(t + 0.6);
-    });
-  }
-
-  // iPhone Marimba melody (E5×3 / B4×3 / A4-C5-E5)
-  const NOTES = [
-    [659.25, 0.00],  // E5
-    [659.25, 0.21],  // E5
-    [659.25, 0.42],  // E5
-    [493.88, 0.70],  // B4
-    [493.88, 0.91],  // B4
-    [493.88, 1.12],  // B4
-    [440.00, 1.40],  // A4
-    [523.25, 1.62],  // C5
-    [659.25, 1.88],  // E5
-  ];
-  const PATTERN_LEN = 3.6;
-
-  async function playPattern() {
-    if (!ringing) { console.log('[Audio] playPattern: not ringing, stopping'); return; }
-
-    const c = getCtx();
-    if (!c) return;
-
-    // Ensure context is running before scheduling notes
-    if (c.state !== 'running') {
-      console.log('[Audio] playPattern: ctx state is', c.state, '— awaiting resume...');
-      try { await c.resume(); } catch (e) { console.error('[Audio] resume error:', e); }
-      console.log('[Audio] playPattern: after resume, state =', c.state);
-    }
-
-    const now = c.currentTime;
-    console.log('[Audio] playPattern: scheduling', NOTES.length, 'notes at t=', now.toFixed(3), '| ctx state:', c.state);
-    // Small lookahead buffer so notes are never scheduled in the past
-    NOTES.forEach(([freq, offset]) => note(freq, now + 0.05 + offset));
-
-    ringtoneTimer = setTimeout(playPattern, PATTERN_LEN * 1000);
-  }
-
-  // Nearly-silent oscillator keeps AudioContext alive on iOS
-  function startSilent() {
-    const c = getCtx();
-    if (!c) return;
-    console.log('[Audio] startSilent: starting silent oscillator, ctx state:', c.state);
-    silentOsc = c.createOscillator();
-    const g   = c.createGain();
-    g.gain.value = 0.00001;   // inaudible
-    silentOsc.connect(g);
-    g.connect(c.destination);
-    silentOsc.start();
-    console.log('[Audio] startSilent: oscillator started');
-  }
-
-  function stopSilent() {
-    if (silentOsc) {
-      console.log('[Audio] stopSilent');
-      try { silentOsc.stop(); } catch (_) {}
-      silentOsc = null;
-    }
-  }
+  const el = document.getElementById('ringtone');
 
   return {
-    unlock() {
-      console.log('[Audio] unlock() — creating/resuming AudioContext from user gesture');
-      getCtx();
-    },
-
+    // Called on ARM (user gesture) — unlocks the audio session
     startWait() {
-      console.log('[Audio] startWait()');
-      this.unlock();
-      startSilent();
+      console.log('[Audio] startWait — playing silent to unlock session');
+      el.volume = 0;
+      el.currentTime = 0;
+      el.play()
+        .then(() => console.log('[Audio] silent play OK, session unlocked'))
+        .catch(e  => console.error('[Audio] silent play failed:', e));
     },
 
+    // Called when the fake call triggers
     startRingtone() {
-      console.log('[Audio] startRingtone() — ctx state:', ctx ? ctx.state : 'no ctx');
-      stopSilent();
-      ringing = true;
-      playPattern();
+      console.log('[Audio] startRingtone');
+      el.volume = 1;
+      el.currentTime = 0;
+      el.play()
+        .then(() => console.log('[Audio] ringtone playing'))
+        .catch(e  => console.error('[Audio] ringtone play failed:', e));
     },
 
     stopRingtone() {
-      console.log('[Audio] stopRingtone()');
-      ringing = false;
-      clearTimeout(ringtoneTimer);
-      ringtoneTimer = null;
+      console.log('[Audio] stopRingtone');
+      el.pause();
+      el.currentTime = 0;
     },
 
-    stopAll() {
-      this.stopRingtone();
-      stopSilent();
-    },
+    stopAll() { this.stopRingtone(); },
   };
 })();
 

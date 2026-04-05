@@ -1,10 +1,11 @@
-const CACHE = 'emergency-call-v2';
+const CACHE = 'emergency-call-v3';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
   './manifest.json',
+  './ringtone.mp3',
   './icons/icon-192.png',
   './icons/icon-512.png',
 ];

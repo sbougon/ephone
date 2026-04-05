@@ -18,32 +18,32 @@ let wakeLock       = null;
 // ─────────────────────────────────────────────
 //  Audio engine  (MP3 via <audio> element)
 //
-//  iOS trick: play at volume 0 during the wait to keep the audio
-//  session alive, then switch to vol 1 when the call triggers.
-//  This avoids needing a fresh user gesture for the delayed play.
+//  iOS trick: loop a 2s silence file during the wait to keep the
+//  audio session alive, then swap src to the ringtone when the
+//  call triggers — no fresh user gesture needed.
 // ─────────────────────────────────────────────
 const Audio = (() => {
   const el = document.getElementById('ringtone');
 
+  function playSrc(src) {
+    el.src = src;
+    el.load();
+    el.play()
+      .then(() => console.log('[Audio] playing:', src))
+      .catch(e  => console.error('[Audio] play failed:', src, e));
+  }
+
   return {
-    // Called on ARM (user gesture) — unlocks the audio session
+    // Called on ARM (user gesture) — loops silence to keep session alive
     startWait() {
-      console.log('[Audio] startWait — playing silent to unlock session');
-      el.volume = 0;
-      el.currentTime = 0;
-      el.play()
-        .then(() => console.log('[Audio] silent play OK, session unlocked'))
-        .catch(e  => console.error('[Audio] silent play failed:', e));
+      console.log('[Audio] startWait — looping silence');
+      playSrc('silence.mp3');
     },
 
-    // Called when the fake call triggers
+    // Called when the fake call triggers — swap to ringtone
     startRingtone() {
-      console.log('[Audio] startRingtone');
-      el.volume = 1;
-      el.currentTime = 0;
-      el.play()
-        .then(() => console.log('[Audio] ringtone playing'))
-        .catch(e  => console.error('[Audio] ringtone play failed:', e));
+      console.log('[Audio] startRingtone — switching to ringtone.mp3');
+      playSrc('ringtone.mp3');
     },
 
     stopRingtone() {

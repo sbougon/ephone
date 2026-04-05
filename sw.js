@@ -1,4 +1,4 @@
-const CACHE = 'emergency-call-v3';
+const CACHE = 'emergency-call-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './app.js',
   './manifest.json',
   './ringtone.mp3',
+  './silence.mp3',
   './icons/icon-192.png',
   './icons/icon-512.png',
 ];

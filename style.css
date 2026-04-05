@@ -1,0 +1,413 @@
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:  #30D158;
+  --red:    #FF3B30;
+  --bg:     #1C1C1E;
+  --fg:     #FFFFFF;
+  --gray:   rgba(235,235,245,0.6);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ── Screen management ── */
+.screen {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease;
+  padding-top: var(--safe-t);
+  padding-bottom: var(--safe-b);
+}
+
+.screen.active {
+  opacity: 1; pointer-events: all;
+}
+
+/* ═══════════════════════════════════════
+   SETUP SCREEN
+═══════════════════════════════════════ */
+#screen-setup {
+  background: var(--bg);
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.setup-inner {
+  display: flex; flex-direction: column;
+  align-items: center;
+  padding: 24px 28px 40px;
+  min-height: 100%;
+  gap: 24px;
+}
+
+.app-title {
+  color: var(--fg);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-top: 8px;
+}
+
+/* Photo upload */
+.photo-upload-area {
+  position: relative;
+  cursor: pointer;
+}
+
+.photo-upload-area input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; width: 100%; height: 100%;
+  cursor: pointer;
+}
+
+.setup-photo-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: #3A3A3C;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,0.12);
+}
+
+.setup-photo-circle img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.photo-ph {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+
+.photo-ph span {
+  font-size: 12px;
+  color: var(--gray);
+}
+
+/* Form fields */
+.setup-fields {
+  width: 100%;
+  display: flex; flex-direction: column;
+  gap: 20px;
+}
+
+.field-group {
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.field-group label {
+  font-size: 13px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.field-group input[type="text"] {
+  width: 100%;
+  background: #2C2C2E;
+  border: none; border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 17px;
+  color: var(--fg);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.delay-row {
+  display: flex; gap: 12px;
+}
+
+.delay-unit {
+  flex: 1;
+  display: flex; align-items: center;
+  background: #2C2C2E;
+  border-radius: 10px;
+  padding: 10px 14px;
+  gap: 8px;
+}
+
+.delay-unit input[type="number"] {
+  flex: 1; min-width: 0;
+  background: transparent;
+  border: none; outline: none;
+  font-size: 24px; font-weight: 300;
+  color: var(--fg);
+  text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.delay-unit input[type="number"]::-webkit-inner-spin-button,
+.delay-unit input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.delay-unit span {
+  font-size: 15px; color: var(--gray);
+}
+
+/* ARM button */
+.arm-btn {
+  width: 100%;
+  background: var(--green);
+  color: white;
+  border: none; border-radius: 14px;
+  padding: 18px;
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  -webkit-appearance: none;
+}
+
+.arm-btn:active { opacity: 0.8; }
+
+.setup-note {
+  font-size: 13px;
+  color: var(--gray);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════
+   WAITING SCREEN (fake lock screen)
+═══════════════════════════════════════ */
+#screen-waiting {
+  background: radial-gradient(ellipse at 50% 30%, #2C2C3E 0%, #0A0A0F 100%);
+  justify-content: center;
+  align-items: center;
+}
+
+.lock-body {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+
+.lock-time {
+  font-size: 86px;
+  font-weight: 100;
+  color: var(--fg);
+  letter-spacing: -3px;
+  line-height: 1;
+}
+
+.lock-date {
+  font-size: 18px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.2px;
+}
+
+.cancel-btn {
+  position: absolute;
+  bottom: calc(32px + var(--safe-b));
+  left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,0.15);
+  border: none; border-radius: 20px;
+  padding: 10px 28px;
+  color: rgba(255,255,255,0.7);
+  font-size: 15px;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+/* ═══════════════════════════════════════
+   INCOMING CALL SCREEN
+═══════════════════════════════════════ */
+#screen-call {
+  background: var(--bg);
+}
+
+.call-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) brightness(0.35) saturate(1.4);
+  transform: scale(1.15);
+}
+
+.call-inner {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 0 24px;
+}
+
+.call-top {
+  display: flex; flex-direction: column;
+  align-items: center;
+  margin-top: calc(48px + var(--safe-t));
+  gap: 6px;
+}
+
+.call-label {
+  font-size: 15px;
+  color: var(--gray);
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+.call-name {
+  font-size: 38px;
+  font-weight: 300;
+  color: var(--fg);
+  letter-spacing: -0.5px;
+}
+
+.call-sub {
+  font-size: 15px;
+  color: var(--gray);
+}
+
+/* Contact photo + pulse rings */
+.call-photo-wrap {
+  position: relative;
+  width: 160px; height: 160px;
+  margin: auto;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.pulse-ring {
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  animation: pulse 2.4s ease-out infinite;
+}
+
+.ring-b { animation-delay: 1.2s; }
+
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(1.75); opacity: 0;  }
+}
+
+.call-photo-circle {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: #3A3A3C;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+.call-photo-circle img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+#call-photo-ph {
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Accept / Decline buttons */
+.call-btns {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding: 0 24px;
+  margin-bottom: 24px;
+}
+
+.call-btn {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 10px;
+  cursor: pointer;
+}
+
+.call-btn span {
+  font-size: 14px;
+  color: var(--fg);
+  font-weight: 400;
+}
+
+.btn-circle {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.15s;
+}
+
+.btn-circle:active { opacity: 0.75; }
+
+.btn-decline { background: var(--red); }
+.btn-accept  { background: var(--green); }
+
+.swipe-hint {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: calc(12px + var(--safe-b));
+  letter-spacing: 0.3px;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.8; }
+}
+
+/* ═══════════════════════════════════════
+   ACTIVE CALL (black screen)
+═══════════════════════════════════════ */
+#screen-active {
+  background: #000;
+  justify-content: center;
+  align-items: center;
+}
+
+.active-inner {
+  display: flex; flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: calc(80px + var(--safe-t));
+  gap: 12px;
+}
+
+.active-name {
+  font-size: 32px; font-weight: 300;
+  color: var(--fg);
+}
+
+.active-dur {
+  font-size: 17px;
+  color: var(--gray);
+}
+
+.end-wrap {
+  margin-top: auto;
+  margin-bottom: calc(48px + var(--safe-b));
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+
+.end-btn {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--red);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  transition: opacity 0.15s;
+}
+
+.end-btn:active { opacity: 0.75; }
+
+.end-label {
+  font-size: 14px; color: var(--fg);
+}

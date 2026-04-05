@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Emergency">
+  <title>Emergency Call</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── SCREEN 1: SETUP ── -->
+  <div id="screen-setup" class="screen active">
+    <div class="setup-inner">
+      <h1 class="app-title">Emergency Call</h1>
+
+      <div class="photo-upload-area" id="photo-upload-area">
+        <div class="setup-photo-circle">
+          <img id="setup-photo-img" src="" alt="">
+          <div id="setup-photo-placeholder" class="photo-ph">
+            <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)" width="40" height="40">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4
+                       7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6
+                       1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+            <span>Tap to add photo</span>
+          </div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*">
+      </div>
+
+      <div class="setup-fields">
+        <div class="field-group">
+          <label>Name shown on call screen</label>
+          <input type="text" id="contact-name" value="Mom" maxlength="20">
+        </div>
+
+        <div class="field-group">
+          <label>Delay before call rings</label>
+          <div class="delay-row">
+            <div class="delay-unit">
+              <input type="number" id="delay-min" value="1" min="0" max="59">
+              <span>min</span>
+            </div>
+            <div class="delay-unit">
+              <input type="number" id="delay-sec" value="0" min="0" max="59">
+              <span>sec</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="arm-btn" class="arm-btn">ARM</button>
+      <p class="setup-note">Keep the app open after arming.<br>Screen will stay on automatically.</p>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2: WAITING (fake lock screen) ── -->
+  <div id="screen-waiting" class="screen">
+    <div class="lock-body">
+      <div class="lock-time" id="lock-time">12:00</div>
+      <div class="lock-date" id="lock-date">Wednesday, January 1</div>
+    </div>
+    <button id="cancel-btn" class="cancel-btn">Cancel</button>
+  </div>
+
+  <!-- ── SCREEN 3: INCOMING CALL ── -->
+  <div id="screen-call" class="screen">
+    <div class="call-bg" id="call-bg"></div>
+    <div class="call-inner">
+
+      <div class="call-top">
+        <div class="call-label">incoming call</div>
+        <div class="call-name" id="call-name">Mom</div>
+        <div class="call-sub">iPhone</div>
+      </div>
+
+      <div class="call-photo-wrap">
+        <div class="pulse-ring ring-a"></div>
+        <div class="pulse-ring ring-b"></div>
+        <div class="call-photo-circle">
+          <img id="call-photo-img" src="" alt="">
+          <div id="call-photo-ph">
+            <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)" width="72" height="72">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4
+                       7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6
+                       1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="call-btns">
+        <div class="call-btn" id="decline-btn">
+          <div class="btn-circle btn-decline">
+            <svg viewBox="0 0 24 24" fill="white" width="30" height="30" style="transform:rotate(135deg)">
+              <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2
+                       c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.58.57
+                       .55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3
+                       13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1
+                       0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.6 10.8z"/>
+            </svg>
+          </div>
+          <span>Decline</span>
+        </div>
+
+        <div class="call-btn" id="accept-btn">
+          <div class="btn-circle btn-accept">
+            <svg viewBox="0 0 24 24" fill="white" width="30" height="30">
+              <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2
+                       c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.58.57
+                       .55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3
+                       13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1
+                       0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.6 10.8z"/>
+            </svg>
+          </div>
+          <span>Accept</span>
+        </div>
+      </div>
+
+      <div class="swipe-hint">↑ swipe up to answer</div>
+
+    </div>
+  </div>
+
+  <!-- ── SCREEN 4: ACTIVE CALL (black screen) ── -->
+  <div id="screen-active" class="screen">
+    <div class="active-inner">
+      <div class="active-name" id="active-name">Mom</div>
+      <div class="active-dur" id="active-dur">0:00</div>
+      <div class="end-wrap">
+        <button id="end-btn" class="end-btn">
+          <svg viewBox="0 0 24 24" fill="white" width="30" height="30" style="transform:rotate(135deg)">
+            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2
+                     c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.58.57
+                     .55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3
+                     13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1
+                     0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.6 10.8z"/>
+          </svg>
+        </button>
+        <div class="end-label">End</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

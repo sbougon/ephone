@@ -6,7 +6,7 @@
 const state = {
   photoDataUrl: null,
   contactName: 'Mom',
-  delayMs: 60_000,        // 1 minute default
+  delayMs: 30_000,        // 30 second default
 };
 
 let armTimer       = null;   // setTimeout for the delay
@@ -233,6 +233,36 @@ function applyPhoto() {
 }
 
 // ─────────────────────────────────────────────
+//  URL ↔ delay sync
+//  Supports ?t=30  (seconds)
+//  so each home-screen tile can have its own delay
+// ─────────────────────────────────────────────
+function readDelayInputs() {
+  const min = parseInt(document.getElementById('delay-min').value, 10) || 0;
+  const sec = parseInt(document.getElementById('delay-sec').value, 10) || 0;
+  return min * 60 + sec;
+}
+
+function syncUrlFromInputs() {
+  const totalSec = readDelayInputs();
+  const url = new URL(window.location.href);
+  url.searchParams.set('t', totalSec);
+  history.replaceState(null, '', url.toString());
+}
+
+function applyUrlToInputs() {
+  const params = new URLSearchParams(window.location.search);
+  const t = parseInt(params.get('t'), 10);
+  if (!isNaN(t) && t > 0) {
+    document.getElementById('delay-min').value = Math.floor(t / 60);
+    document.getElementById('delay-sec').value = t % 60;
+    state.delayMs = t * 1000;
+  }
+  // Write the canonical URL (normalises missing ?t param)
+  syncUrlFromInputs();
+}
+
+// ─────────────────────────────────────────────
 //  Lock-screen clock
 // ─────────────────────────────────────────────
 function updateLockClock() {
@@ -380,6 +410,10 @@ document.getElementById('accept-btn').addEventListener('click', answerCall);
 document.getElementById('decline-btn').addEventListener('click', declineCall);
 document.getElementById('end-btn').addEventListener('click',    endCall);
 
+// Keep ?t= in sync whenever delay inputs change
+document.getElementById('delay-min').addEventListener('input', syncUrlFromInputs);
+document.getElementById('delay-sec').addEventListener('input', syncUrlFromInputs);
+
 // ─────────────────────────────────────────────
 //  Service Worker registration
 // ─────────────────────────────────────────────
@@ -391,3 +425,4 @@ if ('serviceWorker' in navigator) {
 //  Init
 // ─────────────────────────────────────────────
 loadSettings();
+applyUrlToInputs();   // ?t= overrides saved settings for delay

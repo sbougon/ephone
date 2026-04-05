@@ -398,15 +398,21 @@ document.getElementById('delay-sec').addEventListener('input', syncUrlFromInputs
   const closeBtn = document.createElement('button');
   closeBtn.textContent = '✕ Close';
   Object.assign(closeBtn.style, {
+    display: 'none',  /* hidden until panel opens */
     position: 'fixed', top: '12px', right: '12px', zIndex: '10000',
     background: '#333', color: '#fff', border: 'none', borderRadius: '8px',
     padding: '8px 16px', fontSize: '14px', cursor: 'pointer',
   });
-  closeBtn.addEventListener('click', () => { panel.style.display = 'none'; });
+  closeBtn.addEventListener('click', () => {
+    panel.style.display = 'none';
+    closeBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+  });
 
   const clearBtn = document.createElement('button');
   clearBtn.textContent = '🗑 Clear';
   Object.assign(clearBtn.style, {
+    display: 'none',  /* hidden until panel opens */
     position: 'fixed', top: '12px', left: '12px', zIndex: '10000',
     background: '#333', color: '#fff', border: 'none', borderRadius: '8px',
     padding: '8px 16px', fontSize: '14px', cursor: 'pointer',
@@ -432,8 +438,11 @@ document.getElementById('delay-sec').addEventListener('input', syncUrlFromInputs
       tapTimer = setTimeout(() => { tapCount = 0; }, 600);
       if (tapCount >= 5) {
         tapCount = 0;
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        if (panel.style.display !== 'none') renderLogs();
+        const opening = panel.style.display === 'none';
+        panel.style.display    = opening ? 'block' : 'none';
+        closeBtn.style.display = opening ? 'block' : 'none';
+        clearBtn.style.display = opening ? 'block' : 'none';
+        if (opening) renderLogs();
       }
     });
   }

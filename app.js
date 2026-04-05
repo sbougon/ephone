@@ -193,40 +193,54 @@ function updateLockClock() {
 // ─────────────────────────────────────────────
 //  ARM flow
 // ─────────────────────────────────────────────
-function arm() {
-  // Read current settings from form
-  const nameVal  = document.getElementById('contact-name').value.trim() || 'Mom';
-  const minVal   = parseInt(document.getElementById('delay-min').value, 10) || 0;
-  const secVal   = parseInt(document.getElementById('delay-sec').value, 10) || 0;
-  const delayMs  = (minVal * 60 + secVal) * 1000;
 
-  if (delayMs <= 0) {
-    triggerCall();   // fire immediately if delay is 0
-    return;
+// Shared logic that starts the waiting screen + timer.
+// Called both from arm() (user gesture → audio unlocks immediately)
+// and from autoArm() (no gesture → audio unlocks on first touch).
+function startWaiting(withAudio) {
+  document.getElementById('call-name').textContent   = state.contactName;
+  document.getElementById('active-name').textContent = state.contactName;
+
+  if (withAudio) {
+    try { Audio.startWait(); } catch (e) { console.error('[arm] audio threw:', e); }
+  } else {
+    // No user gesture yet — unlock audio on the very first touch
+    console.log('[autoArm] will unlock audio on first touch');
+    document.addEventListener('touchend', function unlock() {
+      console.log('[autoArm] first touch — unlocking audio');
+      try { Audio.startWait(); } catch (e) { console.error('[autoArm] audio threw:', e); }
+      document.removeEventListener('touchend', unlock);
+    }, { once: true, passive: true });
   }
 
-  state.contactName = nameVal;
-  state.delayMs     = delayMs;
-  saveSettings();
-
-  // Update call screen name
-  document.getElementById('call-name').textContent  = nameVal;
-  document.getElementById('active-name').textContent = nameVal;
-
-  // Unlock audio context with this user gesture
-  // Wrapped in try/catch so a failed audio init never blocks the screen transition
-  try { Audio.startWait(); } catch (e) { console.error('[arm] Audio.startWait threw:', e); }
-
-  // Show lock screen
   updateLockClock();
   lockClockTimer = setInterval(updateLockClock, 10_000);
   showScreen('screen-waiting');
-
-  // Keep screen on
   requestWakeLock();
+  armTimer = setTimeout(triggerCall, state.delayMs);
+}
 
-  // Schedule the call
-  armTimer = setTimeout(triggerCall, delayMs);
+// Called from the ARM button — has a user gesture so audio unlocks now
+function arm() {
+  const nameVal = document.getElementById('contact-name').value.trim() || 'Mom';
+  const minVal  = parseInt(document.getElementById('delay-min').value, 10) || 0;
+  const secVal  = parseInt(document.getElementById('delay-sec').value, 10) || 0;
+  const delayMs = (minVal * 60 + secVal) * 1000;
+
+  state.contactName = nameVal;
+  state.delayMs     = delayMs || 1000;  // minimum 1 s
+  saveSettings();
+  localStorage.setItem('ec_configured', '1');  // skip setup next open
+
+  if (delayMs <= 0) { triggerCall(); return; }
+  startWaiting(true);
+}
+
+// Called on load when the app was previously configured —
+// goes straight to the waiting screen, no setup shown
+function autoArm() {
+  console.log('[autoArm] skipping setup, delayMs =', state.delayMs);
+  startWaiting(false);
 }
 
 function cancelArm() {
@@ -460,4 +474,10 @@ if ('serviceWorker' in navigator) {
 // ─────────────────────────────────────────────
 loadSettings();
 applyUrlToInputs();   // ?t= overrides saved settings for delay
-console.log('[init] app ready, delayMs =', state.delayMs, '| standalone =', window.navigator.standalone);
+console.log('[init] app ready, delayMs =', state.delayMs,
+            '| configured =', !!localStorage.getItem('ec_configured'),
+            '| standalone =', window.navigator.standalone);
+
+if (localStorage.getItem('ec_configured')) {
+  autoArm();  // skip setup, go straight to waiting screen
+}

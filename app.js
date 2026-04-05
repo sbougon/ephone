@@ -20,24 +20,30 @@ let wakeLock       = null;
 // ─────────────────────────────────────────────
 const Audio = (() => {
   let ctx            = null;
-  let silentOsc      = null;   // keeps audio context alive during wait
+  let silentOsc      = null;
   let ringtoneTimer  = null;
   let ringing        = false;
 
   function getCtx() {
     if (!ctx) {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (!Ctor) { console.error('[Audio] WebAudio not supported'); return null; }
+      ctx = new Ctor();
+      console.log('[Audio] AudioContext created — state:', ctx.state, '| sampleRate:', ctx.sampleRate);
     }
-    if (ctx.state === 'suspended') ctx.resume();
+    if (ctx.state === 'suspended') {
+      console.log('[Audio] Context suspended, calling resume()...');
+      ctx.resume()
+        .then(() => console.log('[Audio] resume() resolved — state now:', ctx.state))
+        .catch(e  => console.error('[Audio] resume() failed:', e));
+    }
     return ctx;
   }
 
-  // Play one marimba-style note
-  // iPhone "Marimba/Opening" ringtone approximation
+  // One marimba-style note (fundamental + 4th harmonic)
   function note(freq, t, vol = 0.38) {
-    const c = getCtx();
-
-    // Fundamental (sine) + 4th harmonic (marimba character)
+    const c = ctx;
+    if (!c) return;
     [[freq, vol], [freq * 4, vol * 0.12]].forEach(([f, v]) => {
       const osc  = c.createOscillator();
       const gain = c.createGain();
@@ -53,7 +59,7 @@ const Audio = (() => {
     });
   }
 
-  // iPhone Marimba melody (E5-E5-E5 / B4-B4-B4 / A4-C5-E5)
+  // iPhone Marimba melody (E5×3 / B4×3 / A4-C5-E5)
   const NOTES = [
     [659.25, 0.00],  // E5
     [659.25, 0.21],  // E5
@@ -63,49 +69,74 @@ const Audio = (() => {
     [493.88, 1.12],  // B4
     [440.00, 1.40],  // A4
     [523.25, 1.62],  // C5
-    [659.25, 1.88],  // E5  (held)
+    [659.25, 1.88],  // E5
   ];
-  const PATTERN_LEN = 3.6; // seconds per loop
+  const PATTERN_LEN = 3.6;
 
-  function playPattern() {
-    if (!ringing) return;
-    const now = getCtx().currentTime;
-    NOTES.forEach(([freq, offset]) => note(freq, now + offset));
+  async function playPattern() {
+    if (!ringing) { console.log('[Audio] playPattern: not ringing, stopping'); return; }
+
+    const c = getCtx();
+    if (!c) return;
+
+    // Ensure context is running before scheduling notes
+    if (c.state !== 'running') {
+      console.log('[Audio] playPattern: ctx state is', c.state, '— awaiting resume...');
+      try { await c.resume(); } catch (e) { console.error('[Audio] resume error:', e); }
+      console.log('[Audio] playPattern: after resume, state =', c.state);
+    }
+
+    const now = c.currentTime;
+    console.log('[Audio] playPattern: scheduling', NOTES.length, 'notes at t=', now.toFixed(3), '| ctx state:', c.state);
+    // Small lookahead buffer so notes are never scheduled in the past
+    NOTES.forEach(([freq, offset]) => note(freq, now + 0.05 + offset));
+
     ringtoneTimer = setTimeout(playPattern, PATTERN_LEN * 1000);
   }
 
-  // Nearly-silent oscillator keeps audio context alive on iOS
-  // so the ringtone can fire without a fresh user gesture
+  // Nearly-silent oscillator keeps AudioContext alive on iOS
   function startSilent() {
-    const c   = getCtx();
+    const c = getCtx();
+    if (!c) return;
+    console.log('[Audio] startSilent: starting silent oscillator, ctx state:', c.state);
     silentOsc = c.createOscillator();
     const g   = c.createGain();
-    g.gain.value = 0.00001;
+    g.gain.value = 0.00001;   // inaudible
     silentOsc.connect(g);
     g.connect(c.destination);
     silentOsc.start();
+    console.log('[Audio] startSilent: oscillator started');
   }
 
   function stopSilent() {
-    if (silentOsc) { try { silentOsc.stop(); } catch (_) {} silentOsc = null; }
+    if (silentOsc) {
+      console.log('[Audio] stopSilent');
+      try { silentOsc.stop(); } catch (_) {}
+      silentOsc = null;
+    }
   }
 
   return {
-    // Call once from the first user gesture (ARM tap)
-    unlock() { getCtx(); },
+    unlock() {
+      console.log('[Audio] unlock() — creating/resuming AudioContext from user gesture');
+      getCtx();
+    },
 
     startWait() {
+      console.log('[Audio] startWait()');
       this.unlock();
       startSilent();
     },
 
     startRingtone() {
+      console.log('[Audio] startRingtone() — ctx state:', ctx ? ctx.state : 'no ctx');
       stopSilent();
       ringing = true;
       playPattern();
     },
 
     stopRingtone() {
+      console.log('[Audio] stopRingtone()');
       ringing = false;
       clearTimeout(ringtoneTimer);
       ringtoneTimer = null;
@@ -180,29 +211,25 @@ function applySettingsToSetupUI() {
 }
 
 function applyPhoto() {
-  const setupImg = document.getElementById('setup-photo-img');
-  const setupPh  = document.getElementById('setup-photo-placeholder');
-  const callImg  = document.getElementById('call-photo-img');
-  const callPh   = document.getElementById('call-photo-ph');
-  const callBg   = document.getElementById('call-bg');
+  const photos = [
+    { img: 'setup-photo-img',  ph: 'setup-photo-placeholder' },
+    { img: 'call-photo-img',   ph: 'call-photo-ph'           },
+    { img: 'active-photo-img', ph: 'active-photo-ph'         },
+  ];
 
-  if (state.photoDataUrl) {
-    setupImg.src = state.photoDataUrl;
-    setupImg.style.display = 'block';
-    setupPh.style.display  = 'none';
-
-    callImg.src = state.photoDataUrl;
-    callImg.style.display = 'block';
-    callPh.style.display  = 'none';
-
-    callBg.style.backgroundImage = `url(${state.photoDataUrl})`;
-  } else {
-    setupImg.style.display = 'none';
-    setupPh.style.display  = 'flex';
-    callImg.style.display  = 'none';
-    callPh.style.display   = 'flex';
-    callBg.style.backgroundImage = 'none';
-  }
+  photos.forEach(({ img, ph }) => {
+    const imgEl = document.getElementById(img);
+    const phEl  = document.getElementById(ph);
+    if (!imgEl || !phEl) return;
+    if (state.photoDataUrl) {
+      imgEl.src          = state.photoDataUrl;
+      imgEl.style.display = 'block';
+      phEl.style.display  = 'none';
+    } else {
+      imgEl.style.display = 'none';
+      phEl.style.display  = 'flex';
+    }
+  });
 }
 
 // ─────────────────────────────────────────────
@@ -283,12 +310,13 @@ function triggerCall() {
 function answerCall() {
   Audio.stopRingtone();
   callDurSec = 0;
-  document.getElementById('active-dur').textContent = '0:00';
+  document.getElementById('active-dur').textContent  = '00:00';
+  document.getElementById('active-name').textContent = state.contactName;
   showScreen('screen-active');
 
   callDurTimer = setInterval(() => {
     callDurSec++;
-    const m = Math.floor(callDurSec / 60);
+    const m = String(Math.floor(callDurSec / 60)).padStart(2, '0');
     const s = String(callDurSec % 60).padStart(2, '0');
     document.getElementById('active-dur').textContent = `${m}:${s}`;
   }, 1000);

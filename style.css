@@ -224,189 +224,119 @@ html, body {
 }
 
 /* ═══════════════════════════════════════
-   INCOMING CALL SCREEN
+   SHARED: INCOMING CALL + ACTIVE CALL
 ═══════════════════════════════════════ */
-#screen-call {
-  background: var(--bg);
+#screen-call,
+#screen-active {
+  background: #2B2B2B;
+  flex-direction: column;
 }
 
-.call-bg {
-  position: absolute; inset: 0;
-  background-size: cover;
-  background-position: center;
-  filter: blur(40px) brightness(0.35) saturate(1.4);
-  transform: scale(1.15);
-}
-
-.call-inner {
-  position: relative; z-index: 1;
-  display: flex; flex-direction: column;
+/* ── Contact header (top-left: photo + name) ── */
+.ios-header {
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  height: 100%;
-  padding: 0 24px;
+  gap: 14px;
+  padding: calc(20px + var(--safe-t)) 20px 0;
 }
 
-.call-top {
-  display: flex; flex-direction: column;
-  align-items: center;
-  margin-top: calc(48px + var(--safe-t));
-  gap: 6px;
-}
-
-.call-label {
-  font-size: 15px;
-  color: var(--gray);
-  font-weight: 400;
-  letter-spacing: 0.2px;
-}
-
-.call-name {
-  font-size: 38px;
-  font-weight: 300;
-  color: var(--fg);
-  letter-spacing: -0.5px;
-}
-
-.call-sub {
-  font-size: 15px;
-  color: var(--gray);
-}
-
-/* Contact photo + pulse rings */
-.call-photo-wrap {
-  position: relative;
-  width: 160px; height: 160px;
-  margin: auto;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.pulse-ring {
-  position: absolute;
-  width: 160px; height: 160px;
+.ios-photo-wrap {
+  width: 72px; height: 72px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.35);
-  animation: pulse 2.4s ease-out infinite;
-}
-
-.ring-b { animation-delay: 1.2s; }
-
-@keyframes pulse {
-  0%   { transform: scale(1);   opacity: 0.7; }
-  100% { transform: scale(1.75); opacity: 0;  }
-}
-
-.call-photo-circle {
-  width: 140px; height: 140px;
-  border-radius: 50%;
-  background: #3A3A3C;
+  background: #4A4A4C;
   overflow: hidden;
+  flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  border: 2px solid rgba(255,255,255,0.15);
 }
 
-.call-photo-circle img {
+.ios-photo-wrap img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: none;
 }
 
-#call-photo-ph {
+.ios-avatar {
   display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
 }
 
-/* Accept / Decline buttons */
-.call-btns {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  padding: 0 24px;
-  margin-bottom: 24px;
-}
-
-.call-btn {
+.ios-info {
   display: flex; flex-direction: column;
-  align-items: center; gap: 10px;
-  cursor: pointer;
+  gap: 2px;
 }
 
-.call-btn span {
-  font-size: 14px;
-  color: var(--fg);
+.ios-sub {
+  font-size: 15px;
+  color: #8E8E93;
   font-weight: 400;
 }
 
-.btn-circle {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.15s;
+.ios-timer {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
 }
 
-.btn-circle:active { opacity: 0.75; }
-
-.btn-decline { background: var(--red); }
-.btn-accept  { background: var(--green); }
-
-.swipe-hint {
-  font-size: 13px;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: calc(12px + var(--safe-b));
-  letter-spacing: 0.3px;
-  animation: hintPulse 2s ease-in-out infinite;
+.ios-name {
+  font-size: 30px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
 }
 
-@keyframes hintPulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.8; }
+/* Middle spacer */
+.ios-spacer { flex: 1; }
+
+/* ── Bottom button section ── */
+.ios-btn-section {
+  display: flex; flex-direction: column;
+  gap: 20px;
+  padding: 0 12px calc(36px + var(--safe-b));
 }
 
-/* ═══════════════════════════════════════
-   ACTIVE CALL (black screen)
-═══════════════════════════════════════ */
-#screen-active {
-  background: #000;
-  justify-content: center;
-  align-items: center;
+.ios-btn-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
 }
 
-.active-inner {
+.ios-btn-item {
   display: flex; flex-direction: column;
   align-items: center;
-  height: 100%;
-  padding-top: calc(80px + var(--safe-t));
-  gap: 12px;
-}
-
-.active-name {
-  font-size: 32px; font-weight: 300;
-  color: var(--fg);
-}
-
-.active-dur {
-  font-size: 17px;
-  color: var(--gray);
-}
-
-.end-wrap {
-  margin-top: auto;
-  margin-bottom: calc(48px + var(--safe-b));
-  display: flex; flex-direction: column;
-  align-items: center; gap: 8px;
-}
-
-.end-btn {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  background: var(--red);
-  border: none;
-  display: flex; align-items: center; justify-content: center;
+  gap: 10px;
   cursor: pointer;
-  -webkit-appearance: none;
+  min-width: 80px;
+}
+
+.ios-btn-item span {
+  font-size: 13px;
+  color: #FFFFFF;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Ghost circle (Message, Remind Me, Audio, etc.) */
+.ios-ghost-circle {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  display: flex; align-items: center; justify-content: center;
   transition: opacity 0.15s;
 }
 
-.end-btn:active { opacity: 0.75; }
+.ios-btn-item:active .ios-ghost-circle,
+.ios-btn-item:active .ios-color-circle { opacity: 0.7; }
 
-.end-label {
-  font-size: 14px; color: var(--fg);
+/* Filled colored circle (Decline, Accept, End) */
+.ios-color-circle {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.15s;
 }
+
+.ios-red   { background: #C0392B; }
+.ios-green { background: #27AE60; }

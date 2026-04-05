@@ -74,9 +74,16 @@ function releaseWakeLock() {
 
 // Re-acquire if document becomes visible again
 document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible' && !wakeLock) {
+  if (document.visibilityState === 'visible') {
     const waiting = document.getElementById('screen-waiting').classList.contains('active');
-    if (waiting) await requestWakeLock();
+    if (waiting && !wakeLock) await requestWakeLock();
+
+    // If configured and we landed back on setup (e.g. after a finished call),
+    // skip setup and go straight to tap-to-arm.
+    if (localStorage.getItem('ec_configured')) {
+      const onSetup = document.getElementById('screen-setup').classList.contains('active');
+      if (onSetup) autoArm();
+    }
   }
 });
 

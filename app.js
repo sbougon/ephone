@@ -237,10 +237,34 @@ function arm() {
 }
 
 // Called on load when the app was previously configured —
-// goes straight to the waiting screen, no setup shown
+// shows the lock screen immediately, waits for a tap to start
+// the timer and unlock audio (iOS requires a user gesture).
 function autoArm() {
-  console.log('[autoArm] skipping setup, delayMs =', state.delayMs);
-  startWaiting(false);
+  console.log('[autoArm] showing lock screen, waiting for tap');
+
+  document.getElementById('call-name').textContent   = state.contactName;
+  document.getElementById('active-name').textContent = state.contactName;
+
+  updateLockClock();
+  lockClockTimer = setInterval(updateLockClock, 10_000);
+  requestWakeLock();
+  showScreen('screen-waiting');
+
+  // Show the tap hint
+  const hint = document.getElementById('tap-hint');
+  hint.style.display = 'block';
+
+  // Any touch on the waiting screen (except Cancel) starts the countdown
+  const screen = document.getElementById('screen-waiting');
+  screen.addEventListener('touchend', function onTap(e) {
+    if (e.target.id === 'cancel-btn') return;   // let cancel work normally
+    screen.removeEventListener('touchend', onTap);
+    hint.style.display = 'none';
+
+    console.log('[autoArm] tapped — starting timer and audio');
+    try { Audio.startWait(); } catch (err) { console.error('[autoArm] audio:', err); }
+    armTimer = setTimeout(triggerCall, state.delayMs);
+  }, { passive: true });
 }
 
 function cancelArm() {

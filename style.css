@@ -215,6 +215,24 @@ body {
   font-feature-settings: "tnum";  /* tabular digits — no layout shift on tick */
 }
 
+.tap-hint {
+  position: absolute;
+  bottom: calc(88px + var(--safe-b));
+  left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.45);
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.9; }
+}
+
 .cancel-btn {
   position: absolute;
   bottom: calc(32px + var(--safe-b));

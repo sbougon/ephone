@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(python3 -c \"from PIL import Image, ImageDraw; print\\('PIL available'\\)\")",
+      "Bash(python3 -c \"import PIL; print\\('PIL available'\\)\")",
+      "Bash(mkdir -p /Users/steven/projects/emergency-phone/icons)",
+      "Bash(convert -size 512x512 'xc:#1C1C1E' -fill '#30D158' -draw 'circle 256,256 256,56' -fill white -font /System/Library/Fonts/Helvetica.ttc -pointsize 240 -gravity center -annotate 0 '\\\\u260E' /Users/steven/projects/emergency-phone/icons/icon-512.png)",
+      "Bash(magick -size 192x192 'xc:#1C1C1E' -fill '#30D158' -draw 'circle 96,96 96,22' -fill white -font /System/Library/Fonts/Helvetica.ttc -pointsize 90 -gravity center -annotate 0 '\\\\u260E' /Users/steven/projects/emergency-phone/icons/icon-192.png)",
+      "Bash(node:*)",
+      "Bash(npx --yes serve . -p 3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(python3 -m http.server 3000)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

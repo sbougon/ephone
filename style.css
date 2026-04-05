@@ -228,7 +228,13 @@ html, body {
 ═══════════════════════════════════════ */
 #screen-call,
 #screen-active {
-  background: #2B2B2B;
+  /* subtle top-center glow matching iOS */
+  background: radial-gradient(
+    circle at 50% 20%,
+    #2a2a2a 0%,
+    #1c1c1e 40%,
+    #000 100%
+  );
   flex-direction: column;
 }
 
@@ -238,11 +244,11 @@ html, body {
   flex-direction: row;
   align-items: center;
   gap: 14px;
-  padding: calc(20px + var(--safe-t)) 20px 0;
+  padding: calc(var(--safe-t) + 46px) 20px 0;
 }
 
 .ios-photo-wrap {
-  width: 72px; height: 72px;
+  width: 92px; height: 92px;   /* ↑ from 72 */
   border-radius: 50%;
   background: #4A4A4C;
   overflow: hidden;
@@ -263,13 +269,14 @@ html, body {
 
 .ios-info {
   display: flex; flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
 .ios-sub {
-  font-size: 15px;
-  color: #8E8E93;
+  font-size: 20px;                   /* ↑ from 15 */
+  color: rgba(255,255,255,0.6);      /* dimmer than before */
   font-weight: 400;
+  margin-bottom: 6px;
 }
 
 .ios-timer {
@@ -278,11 +285,11 @@ html, body {
 }
 
 .ios-name {
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 34px;          /* ↑ from 30 */
+  font-weight: 500;         /* lighter than 700 */
   color: #FFFFFF;
-  letter-spacing: -0.3px;
-  line-height: 1.1;
+  letter-spacing: 0.2px;   /* slightly open */
+  line-height: 1.2;
 }
 
 /* Middle spacer */
@@ -291,7 +298,7 @@ html, body {
 /* ── Bottom button section ── */
 .ios-btn-section {
   display: flex; flex-direction: column;
-  gap: 20px;
+  gap: 40px;                              /* ↑ from 20 */
   padding: 0 12px calc(36px + var(--safe-b));
 }
 
@@ -307,11 +314,11 @@ html, body {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  min-width: 80px;
+  min-width: 88px;
 }
 
 .ios-btn-item span {
-  font-size: 13px;
+  font-size: 15px;          /* ↑ from 13 */
   color: #FFFFFF;
   font-weight: 400;
   text-align: center;
@@ -319,12 +326,14 @@ html, body {
 
 /* Ghost circle (Message, Remind Me, Audio, etc.) */
 .ios-ghost-circle {
-  width: 62px; height: 62px;
+  width: 72px; height: 72px;          /* ↑ from 62 */
   border-radius: 50%;
   background: rgba(255,255,255,0.08);
-  border: 1.5px solid rgba(255,255,255,0.28);
+  border: 1.5px solid rgba(255,255,255,0.25);
   display: flex; align-items: center; justify-content: center;
   transition: opacity 0.15s;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .ios-btn-item:active .ios-ghost-circle,
@@ -332,11 +341,11 @@ html, body {
 
 /* Filled colored circle (Decline, Accept, End) */
 .ios-color-circle {
-  width: 70px; height: 70px;
+  width: 84px; height: 84px;   /* ↑ from 70 */
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   transition: opacity 0.15s;
 }
 
-.ios-red   { background: #C0392B; }
-.ios-green { background: #27AE60; }
+.ios-red   { background: #FF3B30; }   /* iOS system red */
+.ios-green { background: #34C759; }   /* iOS system green */

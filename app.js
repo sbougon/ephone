@@ -303,7 +303,8 @@ function arm() {
   document.getElementById('active-name').textContent = nameVal;
 
   // Unlock audio context with this user gesture
-  Audio.startWait();
+  // Wrapped in try/catch so a failed audio init never blocks the screen transition
+  try { Audio.startWait(); } catch (e) { console.error('[arm] Audio.startWait threw:', e); }
 
   // Show lock screen
   updateLockClock();
@@ -415,10 +416,94 @@ document.getElementById('delay-min').addEventListener('input', syncUrlFromInputs
 document.getElementById('delay-sec').addEventListener('input', syncUrlFromInputs);
 
 // ─────────────────────────────────────────────
+//  In-app debug console
+//  Tap the "Emergency Call" title 5× to open/close
+// ─────────────────────────────────────────────
+;(() => {
+  const MAX = 80;
+  const logs = [];
+
+  // Intercept all console methods
+  ['log', 'warn', 'error', 'info'].forEach(method => {
+    const orig = console[method].bind(console);
+    console[method] = (...args) => {
+      orig(...args);
+      const prefix = method === 'error' ? '🔴' : method === 'warn' ? '🟡' : '⚪';
+      const line   = prefix + ' ' + args.map(a => {
+        try { return typeof a === 'object' ? JSON.stringify(a) : String(a); } catch { return String(a); }
+      }).join(' ');
+      logs.push(line);
+      if (logs.length > MAX) logs.shift();
+      if (panel && panel.style.display !== 'none') renderLogs();
+    };
+  });
+
+  // Catch unhandled errors too
+  window.addEventListener('error', e => {
+    console.error('[uncaught]', e.message, e.filename + ':' + e.lineno);
+  });
+  window.addEventListener('unhandledrejection', e => {
+    console.error('[unhandled promise]', String(e.reason));
+  });
+
+  // Build the panel DOM
+  const panel = document.createElement('div');
+  Object.assign(panel.style, {
+    display: 'none', position: 'fixed', inset: '0', zIndex: '9999',
+    background: 'rgba(0,0,0,0.92)', color: '#0f0', fontFamily: 'monospace',
+    fontSize: '11px', overflowY: 'auto', padding: '48px 10px 80px',
+    whiteSpace: 'pre-wrap', wordBreak: 'break-all',
+  });
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ Close';
+  Object.assign(closeBtn.style, {
+    position: 'fixed', top: '12px', right: '12px', zIndex: '10000',
+    background: '#333', color: '#fff', border: 'none', borderRadius: '8px',
+    padding: '8px 16px', fontSize: '14px', cursor: 'pointer',
+  });
+  closeBtn.addEventListener('click', () => { panel.style.display = 'none'; });
+
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = '🗑 Clear';
+  Object.assign(clearBtn.style, {
+    position: 'fixed', top: '12px', left: '12px', zIndex: '10000',
+    background: '#333', color: '#fff', border: 'none', borderRadius: '8px',
+    padding: '8px 16px', fontSize: '14px', cursor: 'pointer',
+  });
+  clearBtn.addEventListener('click', () => { logs.length = 0; renderLogs(); });
+
+  document.body.appendChild(panel);
+  document.body.appendChild(closeBtn);
+  document.body.appendChild(clearBtn);
+
+  function renderLogs() {
+    panel.textContent = logs.length ? logs.join('\n') : '(no logs yet)';
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  // 5× tap on title to toggle
+  let tapCount = 0, tapTimer = null;
+  const title = document.querySelector('.app-title');
+  if (title) {
+    title.addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+      if (tapCount >= 5) {
+        tapCount = 0;
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        if (panel.style.display !== 'none') renderLogs();
+      }
+    });
+  }
+})();
+
+// ─────────────────────────────────────────────
 //  Service Worker registration
 // ─────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').catch(e => console.error('[SW]', e));
 }
 
 // ─────────────────────────────────────────────
@@ -426,3 +511,4 @@ if ('serviceWorker' in navigator) {
 // ─────────────────────────────────────────────
 loadSettings();
 applyUrlToInputs();   // ?t= overrides saved settings for delay
+console.log('[init] app ready, delayMs =', state.delayMs, '| standalone =', window.navigator.standalone);

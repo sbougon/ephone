@@ -1,4 +1,4 @@
-const CACHE = 'emergency-call-v4';
+const CACHE = 'ringmeplease-v5';
 const ASSETS = [
   './',
   './index.html',

@@ -2,242 +2,1356 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Emergency">
-  <title>Emergency Call</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RingMePlease – Free Fake Incoming Call App | No App Store Needed</title>
+  <meta name="description" content="Escape boring meetings and awkward conversations with a fake incoming call. RingMePlease is 100% free, works on iPhone and Android, and needs no app store. Add to home screen in 30 seconds.">
+  <meta name="keywords" content="fake call app, fake incoming call, escape meeting, rescue call, fake phone call iphone, free fake call, no app store needed, prank call timer, fake call android">
+  <link rel="canonical" href="https://ringmeplease.com">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://ringmeplease.com">
+  <meta property="og:title"       content="RingMePlease – Free Fake Incoming Call">
+  <meta property="og:description" content="Set a timer. Your phone rings. You're saved. Free, private, no app store needed.">
+
+  <!-- Twitter -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="RingMePlease – Free Fake Incoming Call">
+  <meta name="twitter:description" content="Escape boring meetings and awkward conversations. Free, no app store needed.">
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "RingMePlease",
+    "url": "https://ringmeplease.com/app",
+    "description": "Free fake incoming call app — escape boring meetings, no app store needed",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "iOS, Android",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #08090F;
+      --surface:  #111320;
+      --surface2: #1A1D2E;
+      --green:    #30D158;
+      --green-lo: rgba(48,209,88,.1);
+      --green-mid:rgba(48,209,88,.25);
+      --white:    #FFFFFF;
+      --gray:     rgba(255,255,255,.55);
+      --border:   rgba(255,255,255,.08);
+      --red:      #FF3B30;
+      --pixel:    'Press Start 2P', monospace;
+      --body:     -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius:   16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      background: rgba(8,9,15,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--pixel);
+      font-size: 12px;
+      color: var(--green);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .nav-logo span { color: var(--white); }
+
+    .nav-cta {
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 50px;
+      transition: opacity .15s;
+    }
+    .nav-cta:hover { opacity: .85; }
+
+    /* ── Section base ── */
+    section {
+      padding: 80px 24px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .sub {
+      color: var(--gray);
+      font-size: 17px;
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      padding: 64px 24px 80px;
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--pixel);
+      font-size: 8px;
+      color: var(--green);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    .hero-headline {
+      font-size: clamp(32px, 6vw, 58px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+
+    .hero-headline em {
+      font-style: normal;
+      color: var(--green);
+    }
+
+    .hero-sub {
+      color: var(--gray);
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-lo);
+      border: 1px solid var(--green-mid);
+      border-radius: 50px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--green);
+      color: #000;
+      font-size: 17px;
+      font-weight: 800;
+      padding: 18px 32px;
+      border-radius: 50px;
+      transition: opacity .15s, transform .15s;
+      box-shadow: 0 8px 32px rgba(48,209,88,.35);
+    }
+    .hero-cta:hover { opacity: .9; transform: translateY(-2px); }
+
+    .hero-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    /* ── Phone mockup ── */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      animation: phoneFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes phoneFloat {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50%       { transform: translateY(-14px) rotate(-4deg); }
+    }
+
+    .phone-mock {
+      width: 180px;
+      height: 340px;
+      background: #000;
+      border-radius: 36px;
+      border: 2.5px solid #3A3A3C;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 40px 80px rgba(0,0,0,.8),
+        0 0 0 1px rgba(255,255,255,.05),
+        inset 0 0 30px rgba(48,209,88,.04);
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 70px; height: 20px;
+      background: #000;
+      border-radius: 0 0 14px 14px;
+      border: 2px solid #3A3A3C;
+      border-top: none;
+      z-index: 10;
+    }
+
+    .phone-screen {
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at 50% 20%, #252525, #000);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 14px 20px;
+    }
+
+    .mock-top {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mock-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: #4A4A4C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .mock-info-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,.5);
+      margin-bottom: 2px;
+    }
+
+    .mock-info-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .mock-spacer { flex: 1; }
+
+    .mock-btns {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mock-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .mock-btn.dec { background: var(--red); }
+    .mock-btn.acc { background: #34C759; }
+
+    .mock-ring {
+      position: absolute;
+      inset: -1px;
+      border-radius: 36px;
+      border: 2px solid rgba(48,209,88,.6);
+      animation: ringPulse 1.6s ease-out infinite;
+    }
+    .mock-ring:nth-child(2) { animation-delay: .5s; }
+
+    @keyframes ringPulse {
+      0%   { transform: scale(1);    opacity: .7; }
+      100% { transform: scale(1.08); opacity: 0; }
+    }
+
+    /* ── VALUES ── */
+    #values {
+      padding: 0 24px 80px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .value-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .value-icon {
+      font-size: 36px;
+      margin-bottom: 14px;
+    }
+
+    .value-title {
+      font-weight: 800;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .value-desc {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+    }
+
+    .step {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .step-num {
+      font-family: var(--pixel);
+      font-size: 10px;
+      color: var(--green);
+      background: var(--green-lo);
+      border: 1px solid var(--green-mid);
+      border-radius: 50px;
+      padding: 8px 14px;
+    }
+
+    .step-title {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .step-desc {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.65;
+    }
+
+    .step-arrow {
+      position: absolute;
+      top: 8px; right: -20px;
+      color: var(--border);
+      font-size: 22px;
+    }
+
+    /* ── USE CASES ── */
+    #usecases { padding: 80px 0; max-width: none; }
+
+    .usecases-inner {
+      padding: 0 24px;
+      max-width: 1080px;
+      margin: 0 auto 40px;
+    }
+
+    .cards-scroll {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding: 8px 24px 24px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .cards-scroll::-webkit-scrollbar { display: none; }
+
+    .pixel-card {
+      flex: 0 0 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      scroll-snap-align: start;
+      transition: transform .2s;
+    }
+    .pixel-card:hover { transform: translateY(-4px); }
+
+    .pixel-card svg {
+      display: block;
+      width: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .pixel-card-body {
+      padding: 16px;
+    }
+
+    .pixel-card-title {
+      font-family: var(--pixel);
+      font-size: 8px;
+      color: var(--green);
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .pixel-card-desc {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ── INSTALL GUIDE ── */
+    #install { padding: 80px 24px; max-width: 760px; margin: 0 auto; }
+
+    .tabs { display: flex; gap: 0; margin-bottom: 32px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+
+    input[type="radio"].tab-radio { display: none; }
+
+    .tab-label {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--gray);
+      transition: color .15s, background .15s;
+    }
+
+    #tab-ios:checked    ~ .tabs .label-ios,
+    #tab-and:checked    ~ .tabs .label-and  {
+      background: var(--green);
+      color: #000;
+    }
+
+    .tab-content { display: none; }
+    #tab-ios:checked ~ .content-ios { display: block; }
+    #tab-and:checked ~ .content-and { display: block; }
+
+    .install-steps { display: flex; flex-direction: column; gap: 20px; }
+
+    .install-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .install-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #000;
+      font-weight: 900;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .install-text strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .install-text span {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    /* ── WHY SECTION ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .why-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .why-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .why-text strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .why-text span { font-size: 13px; color: var(--gray); }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
+
+    details {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 20px 24px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: '+';
+      font-size: 22px;
+      color: var(--green);
+      flex-shrink: 0;
+      transition: transform .2s;
+    }
+    details[open] summary::after { transform: rotate(45deg); }
+
+    .faq-answer {
+      padding: 0 24px 20px;
+      color: var(--gray);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER CTA band ── */
+    .footer-cta-band {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .footer-cta-band h2 {
+      margin-bottom: 12px;
+    }
+
+    .footer-cta-band .sub {
+      margin: 0 auto 32px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    footer a { color: var(--green); }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      #hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 48px 20px 56px;
+      }
+      .hero-badges { justify-content: center; }
+      .hero-sub { margin-left: auto; margin-right: auto; }
+      .phone-wrap { display: none; }
+      .values-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .step-arrow { display: none; }
+      .why-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 14px 16px; }
+      .nav-logo { font-size: 9px; }
+      section { padding: 56px 16px; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ── SCREEN 1: SETUP ── -->
-  <div id="screen-setup" class="screen active">
-    <div class="setup-inner">
-      <h1 class="app-title">Emergency Call</h1>
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">Ring<span>Me</span>Please</div>
+  <a href="./app/" class="nav-cta">Open App →</a>
+</nav>
 
-      <div class="photo-upload-area" id="photo-upload-area">
-        <div class="setup-photo-circle">
-          <img id="setup-photo-img" src="" alt="">
-          <div id="setup-photo-placeholder" class="photo-ph">
-            <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)" width="40" height="40">
-              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4
-                       7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6
-                       1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-            </svg>
-            <span>Tap to add photo</span>
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">// FREE · PRIVATE · NO APP STORE</p>
+    <h1 class="hero-headline">
+      Escape any<br>conversation.<br><em>Instantly.</em>
+    </h1>
+    <p class="hero-sub">
+      A fake incoming call that saves you from boring meetings,
+      awkward dates, and conversations that should have ended
+      10 minutes ago. Free forever. Nothing to install.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">✓ 100% Free</span>
+      <span class="badge">✓ No Account</span>
+      <span class="badge">✓ No App Store</span>
+      <span class="badge">✓ Works Offline</span>
+    </div>
+    <a href="./app/" class="hero-cta">
+      Get My Rescue Call →
+    </a>
+    <p class="hero-note">Opens instantly in Safari or Chrome · Add to home screen in 3 taps</p>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone-mock">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mock-top">
+          <div class="mock-avatar">👤</div>
+          <div>
+            <div class="mock-info-sub">mobile</div>
+            <div class="mock-info-name">Mom</div>
           </div>
         </div>
-        <input type="file" id="photo-input" accept="image/*">
-      </div>
-
-      <div class="setup-fields">
-        <div class="field-group">
-          <label>Name shown on call screen</label>
-          <input type="text" id="contact-name" value="Mom" maxlength="20">
-        </div>
-
-        <div class="field-group">
-          <label>Delay before call rings</label>
-          <div class="delay-row">
-            <div class="delay-unit">
-              <input type="number" id="delay-min" value="0" min="0" max="59">
-              <span>min</span>
-            </div>
-            <div class="delay-unit">
-              <input type="number" id="delay-sec" value="30" min="0" max="59">
-              <span>sec</span>
-            </div>
-          </div>
+        <div class="mock-spacer"></div>
+        <div class="mock-btns">
+          <div class="mock-btn dec">📵</div>
+          <div class="mock-btn acc">📞</div>
         </div>
       </div>
+      <div class="mock-ring"></div>
+      <div class="mock-ring"></div>
+    </div>
+  </div>
+</section>
 
-      <button id="arm-btn" class="arm-btn">ARM</button>
-      <p class="setup-note">Keep the app open after arming.<br>Screen will stay on automatically.</p>
+<!-- ── VALUES ── -->
+<div id="values">
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🆓</div>
+      <div class="value-title">Free Forever</div>
+      <div class="value-desc">No subscriptions, no in-app purchases, no ads. RingMePlease costs exactly nothing, forever.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🔒</div>
+      <div class="value-title">Completely Private</div>
+      <div class="value-desc">Everything runs in your browser. No servers, no accounts, no tracking. Your name and photo never leave your phone.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">📲</div>
+      <div class="value-title">No App Store</div>
+      <div class="value-desc">Open it in Safari or Chrome and add to your home screen in under 30 seconds. Works on iPhone and Android.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how">
+  <p class="section-label">// HOW IT WORKS</p>
+  <h2>Three taps.<br>You're free.</h2>
+  <p class="sub">No complicated setup. No permissions. No fumbling. Just open, set your timer, and go.</p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <div class="step-title">Set the timer</div>
+      <p class="step-desc">Choose who's calling, upload their photo, and pick your delay — 1 minute, 5 minutes, whatever you need.</p>
+      <span class="step-arrow">→</span>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div class="step-title">Arm it &amp; wait</div>
+      <p class="step-desc">Tap ARM and put your phone away. The screen stays on and looks like a normal lock screen. The clock counts down silently.</p>
+      <span class="step-arrow">→</span>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div class="step-title">Your phone rings</div>
+      <p class="step-desc">A realistic incoming call screen appears with ringtone. Glance at it, look apologetic, excuse yourself. You're done.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── USE CASES ── -->
+<div id="usecases">
+  <div class="usecases-inner">
+    <p class="section-label">// WHY PEOPLE USE IT</p>
+    <h2>We've all been there.</h2>
+    <p class="sub">No judgment. RingMePlease is the polite exit for situations that need one.</p>
+  </div>
+
+  <div class="cards-scroll">
+
+    <!-- Card 1: Boring Meeting -->
+    <div class="pixel-card">
+      <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Wall -->
+        <rect x="0" y="0" width="80" height="60" fill="#1E2D3D"/>
+        <!-- Floor -->
+        <rect x="0" y="48" width="80" height="12" fill="#3D2810"/>
+        <rect x="0" y="47" width="80" height="1" fill="#2A1A08"/>
+        <!-- Whiteboard -->
+        <rect x="2" y="5" width="18" height="16" fill="#BDBDBD"/>
+        <rect x="3" y="6" width="16" height="14" fill="#F0EEE9"/>
+        <!-- Board lines -->
+        <rect x="5" y="9"  width="11" height="1" fill="#9E9E9E"/>
+        <rect x="5" y="12" width="7"  height="1" fill="#9E9E9E"/>
+        <rect x="5" y="15" width="10" height="1" fill="#9E9E9E"/>
+        <rect x="5" y="18" width="5"  height="1" fill="#9E9E9E"/>
+        <!-- Table -->
+        <rect x="14" y="32" width="64" height="4" fill="#8B6914"/>
+        <rect x="14" y="36" width="64" height="1" fill="#5C4010"/>
+        <rect x="16" y="37" width="3"  height="12" fill="#6B4F10"/>
+        <rect x="73" y="37" width="3"  height="12" fill="#6B4F10"/>
+        <!-- Presenter (left, standing, arm pointing at board) -->
+        <rect x="21" y="14" width="6" height="6" fill="#FFCBA4"/>
+        <rect x="21" y="14" width="6" height="1" fill="#3D2314"/>
+        <rect x="23" y="17" width="1" height="1" fill="#222"/>
+        <rect x="25" y="17" width="1" height="1" fill="#222"/>
+        <rect x="20" y="20" width="8" height="8" fill="#2980B9"/>
+        <rect x="10" y="21" width="10" height="2" fill="#FFCBA4"/>
+        <rect x="28" y="21" width="2" height="5" fill="#FFCBA4"/>
+        <rect x="21" y="28" width="3" height="6" fill="#34495E"/>
+        <rect x="25" y="28" width="3" height="6" fill="#34495E"/>
+        <!-- Sitter 1 (bored, ZZZ) -->
+        <rect x="33" y="22" width="6" height="6" fill="#F5C5A3"/>
+        <rect x="33" y="22" width="6" height="1" fill="#8B4513"/>
+        <rect x="35" y="26" width="2" height="1" fill="#222"/>
+        <rect x="32" y="28" width="8" height="6" fill="#E74C3C"/>
+        <!-- Z Z Z above sitter 1 -->
+        <rect x="40" y="15" width="4" height="1" fill="#ECF0F1"/>
+        <rect x="43" y="16" width="1" height="1" fill="#ECF0F1"/>
+        <rect x="42" y="17" width="1" height="1" fill="#ECF0F1"/>
+        <rect x="40" y="18" width="4" height="1" fill="#ECF0F1"/>
+        <rect x="45" y="12" width="3" height="1" fill="#ECF0F1"/>
+        <rect x="47" y="13" width="1" height="1" fill="#ECF0F1"/>
+        <rect x="45" y="14" width="3" height="1" fill="#ECF0F1"/>
+        <!-- Sitter 2 (phone under table) -->
+        <rect x="52" y="22" width="6" height="6" fill="#8D5524"/>
+        <rect x="52" y="22" width="6" height="1" fill="#1A1A1A"/>
+        <rect x="54" y="25" width="1" height="1" fill="#222"/>
+        <rect x="56" y="25" width="1" height="1" fill="#222"/>
+        <rect x="51" y="28" width="8" height="6" fill="#27AE60"/>
+        <rect x="59" y="26" width="3" height="5" fill="#1C1C1E"/>
+        <rect x="59" y="26" width="3" height="1" fill="#30D158"/>
+        <!-- Sitter 3 (asleep, head on table) -->
+        <rect x="67" y="29" width="7" height="4" fill="#FFCBA4"/>
+        <rect x="67" y="29" width="7" height="1" fill="#FFD700"/>
+        <rect x="66" y="25" width="9" height="6" fill="#8E44AD"/>
+        <!-- RINGMEPLEASE label on phone -->
+        <rect x="59" y="27" width="3" height="1" fill="#30D158"/>
+      </svg>
+      <div class="pixel-card-body">
+        <div class="pixel-card-title">The Endless Meeting</div>
+        <div class="pixel-card-desc">Slide 47 of 80. Every Monday at 9am. RingMePlease has your back.</div>
+      </div>
+    </div>
+
+    <!-- Card 2: Netflix Monologue -->
+    <div class="pixel-card">
+      <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Night room -->
+        <rect x="0" y="0" width="80" height="60" fill="#0D0D1A"/>
+        <rect x="0" y="0" width="80" height="42" fill="#14102A"/>
+        <!-- Floor -->
+        <rect x="0" y="42" width="80" height="18" fill="#3D2810"/>
+        <rect x="0" y="41" width="80" height="1" fill="#2A1A08"/>
+        <!-- TV -->
+        <rect x="2" y="5" width="24" height="18" fill="#111111"/>
+        <rect x="3" y="6" width="22" height="15" fill="#1A0030"/>
+        <!-- Netflix N on screen -->
+        <rect x="10" y="8"  width="2" height="11" fill="#E50914"/>
+        <rect x="12" y="8"  width="2" height="3"  fill="#E50914"/>
+        <rect x="14" y="11" width="2" height="3"  fill="#E50914"/>
+        <rect x="16" y="14" width="2" height="5"  fill="#E50914"/>
+        <rect x="18" y="9"  width="2" height="10" fill="#E50914"/>
+        <!-- TV glow on floor -->
+        <rect x="2" y="23" width="4" height="4" fill="#1A1A1A"/>
+        <rect x="8" y="23" width="12" height="4" fill="#1A1A1A"/>
+        <rect x="11" y="27" width="6" height="2" fill="#1A1A1A"/>
+        <!-- Sofa -->
+        <rect x="26" y="26" width="52" height="10" fill="#7B2E2E"/>
+        <rect x="26" y="36" width="52" height="7"  fill="#8B3A3A"/>
+        <rect x="26" y="26" width="4"  height="17" fill="#6B2525"/>
+        <rect x="74" y="26" width="4"  height="17" fill="#6B2525"/>
+        <rect x="53" y="28" width="1"  height="13" fill="#6B2525"/>
+        <!-- TV glow effect on wall -->
+        <rect x="0" y="5" width="3" height="18" fill="#200035"/>
+        <!-- Person A - talker (left on sofa) -->
+        <rect x="31" y="17" width="6" height="6" fill="#FFCBA4"/>
+        <rect x="31" y="17" width="6" height="1" fill="#3D2314"/>
+        <rect x="33" y="20" width="1" height="1" fill="#222"/>
+        <rect x="35" y="20" width="1" height="1" fill="#222"/>
+        <rect x="32" y="22" width="4" height="1" fill="#222"/>
+        <rect x="30" y="23" width="8" height="8" fill="#C0392B"/>
+        <!-- Speech bubble from A -->
+        <rect x="14" y="5"  width="30" height="12" fill="#F5F5F5"/>
+        <rect x="13" y="6"  width="1"  height="10" fill="#F5F5F5"/>
+        <rect x="44" y="6"  width="1"  height="10" fill="#F5F5F5"/>
+        <rect x="14" y="4"  width="30" height="1"  fill="#F5F5F5"/>
+        <rect x="14" y="17" width="30" height="1"  fill="#F5F5F5"/>
+        <!-- Tail of bubble -->
+        <rect x="30" y="17" width="3" height="1" fill="#F5F5F5"/>
+        <rect x="30" y="18" width="2" height="1" fill="#F5F5F5"/>
+        <rect x="30" y="19" width="1" height="1" fill="#F5F5F5"/>
+        <!-- Text lines in bubble -->
+        <rect x="17" y="8"  width="24" height="1" fill="#555"/>
+        <rect x="17" y="11" width="18" height="1" fill="#555"/>
+        <rect x="17" y="14" width="21" height="1" fill="#555"/>
+        <!-- Person B - bored (right on sofa) -->
+        <rect x="60" y="17" width="6" height="6" fill="#8D5524"/>
+        <rect x="60" y="17" width="6" height="1" fill="#1A1A1A"/>
+        <rect x="62" y="21" width="2" height="1" fill="#222"/>
+        <rect x="61" y="23" width="4" height="1" fill="#5C3319"/>
+        <rect x="59" y="23" width="8" height="8" fill="#2980B9"/>
+        <!-- Phone in B's hand showing RingMePlease timer -->
+        <rect x="67" y="20" width="4" height="6" fill="#1C1C1E"/>
+        <rect x="67" y="20" width="4" height="1" fill="#30D158"/>
+        <rect x="67" y="22" width="4" height="1" fill="#444"/>
+        <rect x="67" y="24" width="4" height="1" fill="#444"/>
+      </svg>
+      <div class="pixel-card-body">
+        <div class="pixel-card-title">The Netflix Monologue</div>
+        <div class="pixel-card-desc">"...and then in season 3, they totally..." — you've already seen it. Timer: 2 minutes.</div>
+      </div>
+    </div>
+
+    <!-- Card 3: Awkward First Date -->
+    <div class="pixel-card">
+      <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Restaurant warm bg -->
+        <rect x="0" y="0" width="80" height="60" fill="#2A1A0E"/>
+        <!-- Wall wainscoting -->
+        <rect x="0" y="0" width="80" height="38" fill="#231407"/>
+        <rect x="0" y="37" width="80" height="2"  fill="#3D2810"/>
+        <!-- Floor -->
+        <rect x="0" y="39" width="80" height="21" fill="#1A0E05"/>
+        <!-- Window (night outside) -->
+        <rect x="55" y="3"  width="22" height="20" fill="#0A0A1A"/>
+        <rect x="55" y="3"  width="22" height="1"  fill="#3D2810"/>
+        <rect x="55" y="23" width="22" height="1"  fill="#3D2810"/>
+        <rect x="55" y="3"  width="1"  height="21" fill="#3D2810"/>
+        <rect x="76" y="3"  width="1"  height="21" fill="#3D2810"/>
+        <rect x="65" y="3"  width="1"  height="21" fill="#3D2810"/>
+        <rect x="55" y="13" width="22" height="1"  fill="#3D2810"/>
+        <!-- Moon -->
+        <rect x="68" y="6" width="5" height="5" fill="#FFFACD"/>
+        <rect x="69" y="5" width="3" height="1" fill="#FFFACD"/>
+        <rect x="69" y="11" width="3" height="1" fill="#FFFACD"/>
+        <rect x="72" y="7" width="1" height="3" fill="#FFFACD"/>
+        <!-- Table -->
+        <rect x="20" y="34" width="40" height="4" fill="#8B6914"/>
+        <rect x="20" y="38" width="40" height="1" fill="#5C4010"/>
+        <rect x="22" y="39" width="3"  height="16" fill="#6B4F10"/>
+        <rect x="55" y="39" width="3"  height="16" fill="#6B4F10"/>
+        <!-- Candle center -->
+        <rect x="38" y="27" width="4" height="8" fill="#F5F5DC"/>
+        <rect x="38" y="30" width="1" height="1" fill="#CCC"/>
+        <rect x="41" y="30" width="1" height="1" fill="#CCC"/>
+        <rect x="37" y="35" width="6" height="2" fill="#BDBDBD"/>
+        <rect x="39" y="23" width="2" height="4" fill="#FFD700"/>
+        <rect x="38" y="24" width="4" height="3" fill="#FFA500"/>
+        <!-- Person A (talker, blonde, left) -->
+        <rect x="16" y="18" width="6" height="6" fill="#FFCBA4"/>
+        <rect x="16" y="18" width="6" height="1" fill="#FFD700"/>
+        <rect x="18" y="21" width="1" height="1" fill="#222"/>
+        <rect x="20" y="21" width="1" height="1" fill="#222"/>
+        <rect x="17" y="23" width="5" height="1" fill="#222"/>
+        <rect x="15" y="24" width="8" height="10" fill="#E74C3C"/>
+        <rect x="12" y="33" width="6" height="2" fill="#FFCBA4"/>
+        <!-- Speech bubble from A -->
+        <rect x="2"  y="5"  width="28" height="13" fill="#F5F5F5"/>
+        <rect x="1"  y="6"  width="1"  height="11" fill="#F5F5F5"/>
+        <rect x="30" y="6"  width="1"  height="11" fill="#F5F5F5"/>
+        <rect x="2"  y="4"  width="28" height="1"  fill="#F5F5F5"/>
+        <rect x="2"  y="18" width="28" height="1"  fill="#F5F5F5"/>
+        <rect x="18" y="18" width="3"  height="2"  fill="#F5F5F5"/>
+        <rect x="4"  y="8"  width="22" height="1"  fill="#555"/>
+        <rect x="4"  y="11" width="15" height="1"  fill="#555"/>
+        <rect x="4"  y="14" width="19" height="1"  fill="#555"/>
+        <!-- Person B (uncomfortable, right) -->
+        <rect x="56" y="18" width="6" height="6" fill="#8D5524"/>
+        <rect x="56" y="18" width="6" height="1" fill="#3D2314"/>
+        <!-- eyes looking left (toward exit) -->
+        <rect x="57" y="21" width="1" height="1" fill="#222"/>
+        <rect x="58" y="21" width="1" height="1" fill="#222"/>
+        <rect x="57" y="23" width="4" height="1" fill="#5C3319"/>
+        <rect x="55" y="24" width="8" height="10" fill="#3498DB"/>
+        <rect x="62" y="33" width="6" height="2" fill="#8D5524"/>
+        <!-- Sweat drops -->
+        <rect x="62" y="17" width="1" height="2" fill="#87CEEB"/>
+        <rect x="63" y="19" width="1" height="2" fill="#87CEEB"/>
+      </svg>
+      <div class="pixel-card-body">
+        <div class="pixel-card-title">The Awkward Date</div>
+        <div class="pixel-card-desc">They've been talking about their ex for 20 minutes. The candle is judging you both.</div>
+      </div>
+    </div>
+
+    <!-- Card 4: Halloween Party -->
+    <div class="pixel-card">
+      <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Dark party background -->
+        <rect x="0" y="0" width="80" height="60" fill="#050008"/>
+        <rect x="0" y="0" width="80" height="45" fill="#0A0012"/>
+        <!-- Floor -->
+        <rect x="0" y="45" width="80" height="15" fill="#100008"/>
+        <!-- Stars -->
+        <rect x="10" y="3"  width="1" height="1" fill="#FFFFFF"/>
+        <rect x="25" y="7"  width="1" height="1" fill="#FFFFFF"/>
+        <rect x="45" y="4"  width="1" height="1" fill="#FFFFFF"/>
+        <rect x="60" y="9"  width="1" height="1" fill="#FFFFFF"/>
+        <rect x="70" y="3"  width="1" height="1" fill="#FFFFFF"/>
+        <rect x="35" y="2"  width="1" height="1" fill="#FFA500"/>
+        <!-- Pumpkin Left -->
+        <rect x="3"  y="36" width="14" height="10" fill="#FF6B00"/>
+        <rect x="4"  y="35" width="12" height="1"  fill="#FF6B00"/>
+        <rect x="3"  y="46" width="14" height="1"  fill="#CC5500"/>
+        <rect x="7"  y="33" width="4"  height="3"  fill="#228B22"/>
+        <!-- Jack o lantern face -->
+        <rect x="5"  y="39" width="3"  height="3"  fill="#050008"/>
+        <rect x="11" y="39" width="3"  height="3"  fill="#050008"/>
+        <rect x="5"  y="43" width="2"  height="1"  fill="#050008"/>
+        <rect x="8"  y="44" width="3"  height="1"  fill="#050008"/>
+        <rect x="12" y="43" width="2"  height="1"  fill="#050008"/>
+        <!-- Pumpkin Right -->
+        <rect x="63" y="37" width="14" height="9"  fill="#FF6B00"/>
+        <rect x="64" y="36" width="12" height="1"  fill="#FF6B00"/>
+        <rect x="63" y="46" width="14" height="1"  fill="#CC5500"/>
+        <rect x="68" y="34" width="3"  height="3"  fill="#228B22"/>
+        <!-- Jack o lantern face 2 -->
+        <rect x="65" y="40" width="2" height="2" fill="#050008"/>
+        <rect x="70" y="40" width="2" height="2" fill="#050008"/>
+        <rect x="65" y="43" width="1" height="1" fill="#050008"/>
+        <rect x="67" y="44" width="2" height="1" fill="#050008"/>
+        <rect x="70" y="43" width="1" height="1" fill="#050008"/>
+        <!-- Bat -->
+        <rect x="38" y="8"  width="4"  height="2"  fill="#2D0A3D"/>
+        <rect x="35" y="9"  width="3"  height="1"  fill="#2D0A3D"/>
+        <rect x="42" y="9"  width="3"  height="1"  fill="#2D0A3D"/>
+        <rect x="33" y="10" width="2"  height="1"  fill="#2D0A3D"/>
+        <rect x="45" y="10" width="2"  height="1"  fill="#2D0A3D"/>
+        <!-- Vampire (left, talking) -->
+        <!-- Cloak -->
+        <rect x="21" y="30" width="14" height="16" fill="#1A0A28"/>
+        <rect x="20" y="34" width="16" height="12" fill="#1A0A28"/>
+        <!-- Body under cloak -->
+        <rect x="24" y="26" width="8"  height="9"  fill="#F8F8FF"/>
+        <!-- White collar -->
+        <rect x="23" y="25" width="10" height="3" fill="#F8F8FF"/>
+        <!-- Head -->
+        <rect x="24" y="17" width="8" height="8" fill="#D0D0E0"/>
+        <rect x="24" y="17" width="8" height="1" fill="#1A1A1A"/>
+        <!-- Widow's peak -->
+        <rect x="27" y="18" width="2" height="1" fill="#D0D0E0"/>
+        <rect x="26" y="19" width="4" height="1" fill="#1A1A1A"/>
+        <!-- Eyes red -->
+        <rect x="26" y="21" width="1" height="1" fill="#CC0000"/>
+        <rect x="29" y="21" width="1" height="1" fill="#CC0000"/>
+        <!-- Mouth with fangs -->
+        <rect x="25" y="24" width="6" height="1" fill="#222"/>
+        <rect x="26" y="25" width="1" height="1" fill="#F8F8FF"/>
+        <rect x="29" y="25" width="1" height="1" fill="#F8F8FF"/>
+        <!-- Speech bubble -->
+        <rect x="2"  y="4"  width="22" height="12" fill="#F5F5F5"/>
+        <rect x="1"  y="5"  width="1"  height="10" fill="#F5F5F5"/>
+        <rect x="24" y="5"  width="1"  height="10" fill="#F5F5F5"/>
+        <rect x="2"  y="3"  width="22" height="1"  fill="#F5F5F5"/>
+        <rect x="2"  y="16" width="22" height="1"  fill="#F5F5F5"/>
+        <rect x="26" y="16" width="2"  height="2"  fill="#F5F5F5"/>
+        <rect x="4"  y="7"  width="17" height="1"  fill="#555"/>
+        <rect x="4"  y="10" width="12" height="1"  fill="#555"/>
+        <rect x="4"  y="13" width="15" height="1"  fill="#555"/>
+        <!-- Witch (right, checking phone, relieved) -->
+        <!-- Witch hat -->
+        <rect x="52" y="15" width="12" height="2" fill="#1A1A1A"/>
+        <rect x="55" y="9"  width="6"  height="6"  fill="#1A1A1A"/>
+        <rect x="57" y="7"  width="2"  height="2"  fill="#1A1A1A"/>
+        <!-- Purple hat band -->
+        <rect x="52" y="14" width="12" height="1" fill="#6A0DAD"/>
+        <!-- Head -->
+        <rect x="53" y="17" width="8" height="7" fill="#FFCBA4"/>
+        <!-- Hair -->
+        <rect x="51" y="18" width="12" height="3" fill="#1A1A1A"/>
+        <!-- Smiling eyes (relieved!) -->
+        <rect x="55" y="21" width="1" height="1" fill="#222"/>
+        <rect x="58" y="21" width="1" height="1" fill="#222"/>
+        <!-- Smile -->
+        <rect x="55" y="23" width="1" height="1" fill="#5C3319"/>
+        <rect x="56" y="24" width="2" height="1" fill="#5C3319"/>
+        <rect x="58" y="23" width="1" height="1" fill="#5C3319"/>
+        <!-- Witch dress -->
+        <rect x="51" y="24" width="12" height="12" fill="#4A0080"/>
+        <!-- Phone in hand, glowing green (RingMePlease!) -->
+        <rect x="62" y="22" width="4" height="7" fill="#1C1C1E"/>
+        <rect x="62" y="22" width="4" height="1" fill="#30D158"/>
+        <rect x="62" y="24" width="4" height="1" fill="#30D158"/>
+      </svg>
+      <div class="pixel-card-body">
+        <div class="pixel-card-title">Happy Halloween!</div>
+        <div class="pixel-card-desc">Even costumes can't save you from that one guy who corners you all night.</div>
+      </div>
+    </div>
+
+    <!-- Card 5: Family Dinner -->
+    <div class="pixel-card">
+      <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Warm dining room -->
+        <rect x="0" y="0" width="80" height="60" fill="#1C0E05"/>
+        <rect x="0" y="0" width="80" height="38" fill="#231405"/>
+        <!-- Floor -->
+        <rect x="0" y="38" width="80" height="22" fill="#120A02"/>
+        <!-- Baseboard -->
+        <rect x="0" y="37" width="80" height="1" fill="#3D2810"/>
+        <!-- Chandelier chain -->
+        <rect x="39" y="0" width="2"  height="5"  fill="#5C5C3C"/>
+        <rect x="34" y="5" width="12" height="3"  fill="#DAA520"/>
+        <!-- Chandelier candles -->
+        <rect x="35" y="3" width="1" height="3" fill="#FFFACD"/>
+        <rect x="37" y="3" width="1" height="3" fill="#FFFACD"/>
+        <rect x="39" y="3" width="1" height="3" fill="#FFFACD"/>
+        <rect x="41" y="3" width="1" height="3" fill="#FFFACD"/>
+        <rect x="43" y="3" width="1" height="3" fill="#FFFACD"/>
+        <!-- Candle glow -->
+        <rect x="34" y="2" width="12" height="2" fill="#FFA50020"/>
+        <!-- Table -->
+        <rect x="5"  y="33" width="70" height="5" fill="#8B6914"/>
+        <rect x="5"  y="38" width="70" height="1" fill="#5C4010"/>
+        <rect x="8"  y="39" width="3"  height="16" fill="#6B4F10"/>
+        <rect x="69" y="39" width="3"  height="16" fill="#6B4F10"/>
+        <!-- Tablecloth -->
+        <rect x="5"  y="30" width="70" height="4" fill="#F5F0DC"/>
+        <!-- Plates -->
+        <rect x="10" y="29" width="8" height="3" fill="#BDBDBD"/>
+        <rect x="36" y="29" width="8" height="3" fill="#BDBDBD"/>
+        <rect x="62" y="29" width="8" height="3" fill="#BDBDBD"/>
+        <!-- Turkey/roast center -->
+        <rect x="35" y="24" width="10" height="7" fill="#8B4513"/>
+        <rect x="36" y="23" width="8"  height="2" fill="#A0522D"/>
+        <rect x="38" y="22" width="4"  height="2" fill="#A0522D"/>
+        <!-- Grandma (left, interrogating, gray hair, glasses) -->
+        <rect x="7"  y="16" width="7" height="7" fill="#F5D7C5"/>
+        <rect x="7"  y="16" width="7" height="1" fill="#C0C0C0"/>
+        <!-- Glasses -->
+        <rect x="8"  y="20" width="2" height="1" fill="#1A1A1A"/>
+        <rect x="11" y="20" width="2" height="1" fill="#1A1A1A"/>
+        <rect x="10" y="20" width="1" height="1" fill="#1A1A1A"/>
+        <!-- Grandma mouth (talking) -->
+        <rect x="9"  y="22" width="4" height="1" fill="#222"/>
+        <!-- Grandma body -->
+        <rect x="6"  y="23" width="9" height="10" fill="#9B59B6"/>
+        <!-- Finger wagging -->
+        <rect x="15" y="18" width="8" height="1" fill="#F5D7C5"/>
+        <!-- Speech bubble from grandma -->
+        <rect x="15" y="5"  width="26" height="13" fill="#F5F5F5"/>
+        <rect x="14" y="6"  width="1"  height="11" fill="#F5F5F5"/>
+        <rect x="41" y="6"  width="1"  height="11" fill="#F5F5F5"/>
+        <rect x="15" y="4"  width="26" height="1"  fill="#F5F5F5"/>
+        <rect x="15" y="18" width="26" height="1"  fill="#F5F5F5"/>
+        <rect x="15" y="18" width="3"  height="2"  fill="#F5F5F5"/>
+        <rect x="17" y="7"  width="21" height="1"  fill="#555"/>
+        <rect x="17" y="10" width="14" height="1"  fill="#555"/>
+        <rect x="17" y="13" width="17" height="1"  fill="#555"/>
+        <!-- Protagonist (center, sweating) -->
+        <rect x="36" y="16" width="7" height="7" fill="#FFCBA4"/>
+        <rect x="36" y="16" width="7" height="1" fill="#3D2314"/>
+        <!-- Eyes wide open (scared) -->
+        <rect x="37" y="19" width="1" height="2" fill="#222"/>
+        <rect x="40" y="19" width="1" height="2" fill="#222"/>
+        <rect x="38" y="22" width="3" height="1" fill="#5C3319"/>
+        <!-- Sweat drops -->
+        <rect x="43" y="15" width="1" height="3" fill="#87CEEB"/>
+        <rect x="44" y="18" width="1" height="2" fill="#87CEEB"/>
+        <!-- Body -->
+        <rect x="35" y="23" width="9" height="10" fill="#2C3E50"/>
+        <!-- Phone under table! (green screen visible) -->
+        <rect x="44" y="28" width="4" height="6" fill="#1C1C1E"/>
+        <rect x="44" y="28" width="4" height="1" fill="#30D158"/>
+        <rect x="44" y="30" width="4" height="1" fill="#30D158"/>
+        <!-- Aunt/parent (right) -->
+        <rect x="64" y="17" width="7" height="7" fill="#F0C8A0"/>
+        <rect x="64" y="17" width="7" height="1" fill="#5C3317"/>
+        <rect x="65" y="21" width="1" height="1" fill="#222"/>
+        <rect x="68" y="21" width="1" height="1" fill="#222"/>
+        <rect x="66" y="23" width="3" height="1" fill="#5C3319"/>
+        <rect x="63" y="24" width="9" height="10" fill="#E74C3C"/>
+      </svg>
+      <div class="pixel-card-body">
+        <div class="pixel-card-title">Family Dinner</div>
+        <div class="pixel-card-desc">"So when are you getting married?" Set timer to 3 minutes. Escape with dignity.</div>
+      </div>
+    </div>
+
+  </div><!-- .cards-scroll -->
+</div><!-- #usecases -->
+
+<!-- ── INSTALL GUIDE ── -->
+<div id="install">
+  <p class="section-label">// ADD TO HOME SCREEN</p>
+  <h2>On your phone in<br>under 30 seconds.</h2>
+  <p class="sub" style="margin-bottom:36px">No App Store. No downloads. Just open, tap once, and it lives on your home screen like any other app.</p>
+
+  <!-- CSS-only tab switcher -->
+  <input type="radio" class="tab-radio" name="platform" id="tab-ios" checked>
+  <input type="radio" class="tab-radio" name="platform" id="tab-and">
+
+  <div class="tabs">
+    <label class="tab-label label-ios" for="tab-ios">🍎 iPhone (Safari)</label>
+    <label class="tab-label label-and" for="tab-and">🤖 Android (Chrome)</label>
+  </div>
+
+  <div class="tab-content content-ios">
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="install-num">1</div>
+        <div class="install-text">
+          <strong>Open Safari</strong>
+          <span>Go to <strong>ringmeplease.com</strong> — must be Safari, not Chrome, for iPhone.</span>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">2</div>
+        <div class="install-text">
+          <strong>Tap the Share button</strong>
+          <span>The box with an arrow pointing up at the bottom of your screen.</span>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">3</div>
+        <div class="install-text">
+          <strong>Tap "Add to Home Screen"</strong>
+          <span>Scroll down in the share sheet until you see it, then tap.</span>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">4</div>
+        <div class="install-text">
+          <strong>Tap "Add"</strong>
+          <span>Confirm in the top-right corner. That's it.</span>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">5</div>
+        <div class="install-text">
+          <strong>Open from your home screen</strong>
+          <span>It opens full-screen like a native app — no browser bar, no distractions. Looks completely real.</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ── SCREEN 2: WAITING (fake lock screen) ── -->
-  <div id="screen-waiting" class="screen">
-    <div class="lock-body">
-      <div class="lock-date" id="lock-date">Wednesday, January 1</div>
-      <div class="lock-time" id="lock-time">12:00</div>
-    </div>
-    <div id="tap-hint" class="tap-hint" style="display:none">tap anywhere to arm</div>
-    <button id="cancel-btn" class="cancel-btn">Cancel</button>
-  </div>
-
-  <!-- ── SCREEN 3: INCOMING CALL ── -->
-  <div id="screen-call" class="screen">
-
-    <!-- Contact header: top-left photo + name -->
-    <div class="ios-header">
-      <div class="ios-photo-wrap">
-        <img id="call-photo-img" src="" alt="">
-        <div id="call-photo-ph" class="ios-avatar">
-          <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)" width="36" height="36">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4
-                     7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6
-                     1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-          </svg>
+  <div class="tab-content content-and">
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="install-num">1</div>
+        <div class="install-text">
+          <strong>Open Chrome</strong>
+          <span>Go to <strong>ringmeplease.com</strong> in Chrome on your Android device.</span>
         </div>
       </div>
-      <div class="ios-info">
-        <div class="ios-sub">mobile</div>
-        <div class="ios-name" id="call-name">Mom</div>
-      </div>
-    </div>
-
-    <!-- Spacer -->
-    <div class="ios-spacer"></div>
-
-    <!-- Bottom buttons -->
-    <div class="ios-btn-section">
-
-      <!-- Row 1: ghost buttons -->
-      <div class="ios-btn-row">
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
-              <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-            </svg>
-          </div>
-          <span>Message</span>
-        </div>
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
-              <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7zm.5-11H11v6l5.25 3.15.75-1.23-4.5-2.67V9z"/>
-            </svg>
-          </div>
-          <span>Remind Me</span>
+      <div class="install-step">
+        <div class="install-num">2</div>
+        <div class="install-text">
+          <strong>Tap the three-dot menu ⋮</strong>
+          <span>In the top-right corner of Chrome.</span>
         </div>
       </div>
-
-      <!-- Row 2: Decline / Accept -->
-      <div class="ios-btn-row">
-        <div class="ios-btn-item" id="decline-btn">
-          <div class="ios-color-circle ios-red">
-            <svg viewBox="0 0 24 24" fill="white" width="34" height="34" style="transform:rotate(135deg)">
-              <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36
-                       1.02-.24 1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45
-                       1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1
-                       1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.6 10.8z"/>
-            </svg>
-          </div>
-          <span>Decline</span>
-        </div>
-        <div class="ios-btn-item" id="accept-btn">
-          <div class="ios-color-circle ios-green">
-            <svg viewBox="0 0 24 24" fill="white" width="34" height="34">
-              <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36
-                       1.02-.24 1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45
-                       1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1
-                       1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.6 10.8z"/>
-            </svg>
-          </div>
-          <span>Accept</span>
+      <div class="install-step">
+        <div class="install-num">3</div>
+        <div class="install-text">
+          <strong>Tap "Add to Home Screen"</strong>
+          <span>Or Chrome may show an install banner at the bottom — tap that instead.</span>
         </div>
       </div>
-
+      <div class="install-step">
+        <div class="install-num">4</div>
+        <div class="install-text">
+          <strong>Tap "Add"</strong>
+          <span>Confirm in the dialog. Android will add the icon to your home screen instantly.</span>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">5</div>
+        <div class="install-text">
+          <strong>Open from your home screen</strong>
+          <span>Launches full-screen. Set your timer, arm it, and you're ready to escape anything.</span>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
-  <!-- ── SCREEN 4: ACTIVE CALL ── -->
-  <div id="screen-active" class="screen">
-
-    <!-- Contact header: top-left photo + timer + name -->
-    <div class="ios-header">
-      <div class="ios-photo-wrap">
-        <img id="active-photo-img" src="" alt="">
-        <div id="active-photo-ph" class="ios-avatar">
-          <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)" width="36" height="36">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4
-                     7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6
-                     1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-          </svg>
-        </div>
-      </div>
-      <div class="ios-info">
-        <div class="ios-sub ios-timer" id="active-dur">00:00</div>
-        <div class="ios-name" id="active-name">Mom</div>
+<!-- ── WHY RINGMEPLEASE ── -->
+<section id="why">
+  <p class="section-label">// WHY RINGMEPLEASE</p>
+  <h2>Built for the real world.</h2>
+  <div class="why-grid">
+    <div class="why-item">
+      <div class="why-icon">⚡</div>
+      <div class="why-text">
+        <strong>Instant setup</strong>
+        <span>Open the site, add to home screen, done. You're ready to escape your next meeting in under a minute.</span>
       </div>
     </div>
-
-    <!-- Spacer -->
-    <div class="ios-spacer"></div>
-
-    <!-- Bottom: 3×2 grid -->
-    <div class="ios-btn-section">
-
-      <!-- Row 1: Audio / FaceTime / Mute -->
-      <div class="ios-btn-row">
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
-              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-            </svg>
-          </div>
-          <span>Audio</span>
-        </div>
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
-              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
-            </svg>
-          </div>
-          <span>FaceTime</span>
-        </div>
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
-              <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
-            </svg>
-          </div>
-          <span>Mute</span>
-        </div>
+    <div class="why-item">
+      <div class="why-icon">🛡️</div>
+      <div class="why-text">
+        <strong>Zero data collection</strong>
+        <span>Your name, photo, and contacts never leave your device. There's no server to send them to.</span>
       </div>
-
-      <!-- Row 2: More / End / Keypad -->
-      <div class="ios-btn-row">
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
-              <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
-            </svg>
-          </div>
-          <span>More</span>
-        </div>
-        <div class="ios-btn-item" id="end-btn">
-          <div class="ios-color-circle ios-red">
-            <svg viewBox="0 0 24 24" fill="white" width="34" height="34" style="transform:rotate(135deg)">
-              <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36
-                       1.02-.24 1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45
-                       1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1
-                       1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.6 10.8z"/>
-            </svg>
-          </div>
-          <span>End</span>
-        </div>
-        <div class="ios-btn-item">
-          <div class="ios-ghost-circle">
-            <svg viewBox="0 0 24 24" fill="white" width="24" height="24">
-              <circle cx="6" cy="6" r="1.3"/><circle cx="12" cy="6" r="1.3"/><circle cx="18" cy="6" r="1.3"/>
-              <circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>
-              <circle cx="6" cy="18" r="1.3"/><circle cx="12" cy="18" r="1.3"/><circle cx="18" cy="18" r="1.3"/>
-            </svg>
-          </div>
-          <span>Keypad</span>
-        </div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">📵</div>
+      <div class="why-text">
+        <strong>Works without internet</strong>
+        <span>Once installed, RingMePlease works fully offline. No signal? No problem. Your escape is always available.</span>
       </div>
-
+    </div>
+    <div class="why-item">
+      <div class="why-icon">🎭</div>
+      <div class="why-text">
+        <strong>Looks completely real</strong>
+        <span>The incoming call screen mirrors a native iOS call. It rings, it vibrates, it looks the part.</span>
+      </div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">🖼️</div>
+      <div class="why-text">
+        <strong>Custom photo &amp; name</strong>
+        <span>Add a real contact photo and name so anyone who glances at your screen sees a convincing call.</span>
+      </div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">⏱️</div>
+      <div class="why-text">
+        <strong>Precise timer</strong>
+        <span>Set it to the second — 30 seconds, 2 minutes, 10 minutes. The screen stays on automatically so it never misses.</span>
+      </div>
     </div>
   </div>
+</section>
 
-  <audio id="ringtone" src="ringtone.mp3" loop preload="auto"></audio>
+<!-- ── FAQ ── -->
+<section id="faq">
+  <p class="section-label">// FAQ</p>
+  <h2>Questions people ask.</h2>
 
-  <script src="app.js"></script>
+  <div class="faq-list">
+    <details>
+      <summary>Is RingMePlease really free? No subscriptions?</summary>
+      <p class="faq-answer">Completely free. No subscriptions, no premium tier, no in-app purchases, no ads. RingMePlease is a free fake call app with no catch — it's just a website that works like an app.</p>
+    </details>
+
+    <details>
+      <summary>Does it work on iPhone and Android?</summary>
+      <p class="faq-answer">Yes. On iPhone, open ringmeplease.com in Safari and use Share → Add to Home Screen. On Android, open it in Chrome and use the menu → Add to Home Screen. It works as a full-screen app on both platforms.</p>
+    </details>
+
+    <details>
+      <summary>Do I really not need to download anything from the App Store?</summary>
+      <p class="faq-answer">Correct — no app store needed at all. RingMePlease is a Progressive Web App (PWA). You add it to your home screen directly from your browser in about 5 seconds. It behaves like a native app but lives on the web.</p>
+    </details>
+
+    <details>
+      <summary>Will people see through it? Does it look like a real call?</summary>
+      <p class="faq-answer">The incoming call screen closely mirrors iOS's native design — same layout, same buttons, same style. Add a real contact photo and name for the best effect. Anyone glancing at your screen will see what looks like a genuine incoming call.</p>
+    </details>
+
+    <details>
+      <summary>What happens to my photo and contact name?</summary>
+      <p class="faq-answer">They're saved only on your device using your browser's local storage. Nothing is uploaded, shared, or sent to any server. There are no servers. Your data is entirely private and only exists on your phone.</p>
+    </details>
+
+    <details>
+      <summary>Does it work if I have no internet connection?</summary>
+      <p class="faq-answer">Yes — once you've added RingMePlease to your home screen, it works completely offline thanks to a service worker that caches all the files. No signal needed when you need to escape.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ── FOOTER CTA BAND ── -->
+<div class="footer-cta-band">
+  <p class="section-label" style="text-align:center;margin-bottom:20px">// GET YOUR RESCUE CALL</p>
+  <h2 style="text-align:center">Ready to escape?</h2>
+  <p class="sub" style="text-align:center;margin:12px auto 32px">Open the app right now and set your first timer. Free, private, no sign-up.</p>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+    <a href="./app/" class="hero-cta">Open RingMePlease →</a>
+    <span style="color:var(--gray);font-size:13px">No App Store · No Account · No Nonsense</span>
+  </div>
+</div>
+
+<footer>
+  <p>RingMePlease &copy; 2025 &mdash; Free &amp; Open · <a href="./app/">Open App</a></p>
+</footer>
+
 </body>
 </html>

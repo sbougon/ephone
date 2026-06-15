@@ -402,7 +402,7 @@ document.getElementById('delay-sec').addEventListener('input', syncUrlFromInputs
 
 // ─────────────────────────────────────────────
 //  In-app debug console
-//  Tap the "Emergency Call" title 5× to open/close
+//  Tap the "RingMePlease" title 5× to open/close
 // ─────────────────────────────────────────────
 ;(() => {
   const MAX = 80;

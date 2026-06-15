@@ -1,9 +1,9 @@
 {
-  "name": "Emergency Call",
-  "short_name": "Emergency",
+  "name": "RingMePlease",
+  "short_name": "RingMePlease",
   "description": "Fake incoming call to escape a conversation",
-  "start_url": "/ephone/",
-  "scope": "/ephone/",
+  "start_url": "/ephone/app/",
+  "scope": "/ephone/app/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1C1C1E",

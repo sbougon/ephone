@@ -27,6 +27,22 @@ Emergency Phone PWA (static files, no build step).
    work over plain HTTP. (Some iOS-only behavior still needs real HTTPS on a
    device — for that, serve over your LAN behind an HTTPS tunnel.)
 
+## AWS credentials (CDK deploys)
+
+The container has no access to the host's `~/.aws`, so the credentials for the
+`ringmeplease-cdk-admin` IAM user live in `.aws/` at the repo root
+(`.aws/credentials` + `.aws/config`). This directory is **git-ignored** — never
+commit it. `devcontainer.json` sets `AWS_SHARED_CREDENTIALS_FILE`,
+`AWS_CONFIG_FILE`, and `AWS_PROFILE` so the AWS CLI / CDK pick it up
+automatically. Inside the container you can run infra changes directly:
+
+```
+cd infra && npx cdk deploy
+```
+
+The user is scoped to only assume the CDK bootstrap roles (no standing admin).
+If you ever rotate the key on the host, re-copy it into `.aws/credentials`.
+
 ## Memory
 
 Claude's memory for this project is bind-mounted from the host at

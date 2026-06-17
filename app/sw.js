@@ -1,4 +1,4 @@
-const CACHE = 'ringmeplease-v5';
+const CACHE = 'ringmeplease-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './silence.mp3',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/apple-touch-icon.png',
 ];
 
 self.addEventListener('install', e => {

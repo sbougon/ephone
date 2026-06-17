@@ -1,0 +1,51 @@
+name: Deploy to AWS (S3 + CloudFront)
+
+# Publishes the site to ringmeplease.com on every push to main.
+# Auth is via GitHub OIDC — no long-lived AWS keys are stored. The IAM role
+# (created by the CDK stack in infra/) is scoped to this one bucket + this one
+# distribution. Set these repo *variables* once after `cdk deploy`:
+#   AWS_DEPLOY_ROLE_ARN, S3_BUCKET, CLOUDFRONT_DISTRIBUTION_ID
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Required for OIDC: id-token mints the short-lived token used to assume the role.
+permissions:
+  contents: read
+  id-token: write
+
+# One deploy at a time; let an in-progress run finish.
+concurrency:
+  group: deploy-aws
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      # Publish only the site files (landing page + PWA). Everything else —
+      # .git, .github, infra/, CLAUDE.md, .devcontainer — stays out of the
+      # bucket. --delete keeps the bucket an exact mirror of these paths.
+      - name: Sync site to S3
+        run: |
+          aws s3 sync . "s3://${{ vars.S3_BUCKET }}" \
+            --delete \
+            --exclude "*" \
+            --include "index.html" \
+            --include "app/*"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"

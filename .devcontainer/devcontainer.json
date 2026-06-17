@@ -1,0 +1,27 @@
+{
+  "name": "emergency-phone",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Emergency Phone PWA",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "node",
+  "mounts": [
+    "source=emergency-phone-claude-config,target=/home/node/.claude,type=volume",
+    "source=emergency-phone-gh-config,target=/home/node/.config/gh,type=volume",
+    "source=${localEnv:HOME}/.claude/projects/-Users-steven-projects-emergency-phone/memory,target=/home/node/.claude/projects/-workspace/memory,type=bind,consistency=cached"
+  ],
+  "postCreateCommand": "sudo chown -R node:node /home/node/.claude /home/node/.config/gh && sudo mkdir -p /home/node/.claude/projects/-workspace && sudo chown node:node /home/node/.claude/projects/-workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode"]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# AWS credentials — NEVER commit. Used by the devcontainer (see .devcontainer/).
+.aws/
+
+# Local env / secrets
+.env
+.env.*
+
+# OS cruft
+.DS_Store

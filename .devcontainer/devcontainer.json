@@ -5,6 +5,11 @@
   },
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "containerEnv": {
+    "AWS_SHARED_CREDENTIALS_FILE": "/workspace/.aws/credentials",
+    "AWS_CONFIG_FILE": "/workspace/.aws/config",
+    "AWS_PROFILE": "ringmeplease-cdk-admin"
+  },
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {

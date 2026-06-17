@@ -16,15 +16,15 @@ app/index.html      — 4-screen single-page app (setup → waiting → incoming
 app/app.js          — all logic: state, audio engine, wake lock, screen transitions, photo upload
 app/style.css       — iOS-style dark UI
 app/sw.js           — service worker for offline/PWA caching
-app/manifest.json   — PWA manifest (scope + start_url: /ephone/app/)
+app/manifest.json   — PWA manifest (scope + start_url: relative ./)
 app/ringtone.mp3    — the fake ringtone
 app/silence.mp3     — 2s silent audio loop (key iOS trick — see below)
 app/icons/          — icon-192.png, icon-512.png
 ```
 
-Served from GitHub Pages at `https://sbougon.github.io/ephone/` — landing page at the
-root, PWA at `/ephone/app/`. When the `ringmeplease.com` custom domain is wired up,
-update the manifest `scope`/`start_url` to `/app/` and add a `CNAME` file.
+Served from AWS at `https://ringmeplease.com` — landing page at the root, PWA at
+`/app/`. The manifest uses relative `scope`/`start_url` (`./`) so it works wherever
+it's hosted.
 
 ## Key Technical Tricks
 
@@ -49,11 +49,22 @@ update the manifest `scope`/`start_url` to `/app/` and add a `CNAME` file.
 
 ## Deployment
 
-**Live via GitHub Pages.** CI/CD: push to `main` (e.g. a merged PR) → `.github/workflows/deploy.yml` publishes the whole repo to Pages → live at `https://sbougon.github.io/ephone/`.
+**Live on AWS (S3 + CloudFront) at https://ringmeplease.com.** Infra is defined with
+CDK in `infra/` (see `infra/README.md`): a private S3 bucket (Origin Access Control),
+a CloudFront distribution with a viewer function that rewrites directory URLs, an ACM
+cert, and Route 53 alias records for the apex + `www`.
 
-The workflow uses the official `configure-pages` / `upload-pages-artifact` / `deploy-pages` actions and needs no build step. One-time setup: in repo **Settings → Pages**, set **Source = GitHub Actions**.
+**Content deploys (CI/CD):** push to `main` (e.g. a merged PR) →
+`.github/workflows/deploy-aws.yml` syncs `index.html` + `app/*` to S3 and invalidates
+CloudFront. Auth is via **GitHub OIDC** — no long-lived AWS keys. The deploy role
+(`ringmeplease-github-deploy`, created by the CDK stack) is scoped to *only* this
+bucket + this distribution. Required repo **variables**: `AWS_DEPLOY_ROLE_ARN`,
+`S3_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`.
 
-Future custom domain (`ringmeplease.com`): add a `CNAME` file at the repo root, point DNS at GitHub Pages, and change the manifest `scope`/`start_url` from `/ephone/app/` to `/app/`.
+**Infra changes:** edit `infra/lib/site-stack.ts`, then
+`npx cdk deploy --profile ringmeplease-cdk-admin`. This needs the local admin profile,
+whose IAM user (`ringmeplease-cdk-admin`) is scoped to only assume the CDK bootstrap
+roles — the CI deploy role intentionally cannot modify infrastructure.
 
 ## Landing Page
 
